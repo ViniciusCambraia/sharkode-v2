@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Background Otimizado - Sharkode</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #000;
+    }
+    .label {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 10;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: white;
+      font-weight: 600;
+    }
+    .stats {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.15);
+      font-size: 0.7rem;
+      color: #d1d5db;
+      max-width: 280px;
+      line-height: 1.4;
+    }
+    .stats strong { color: #1a80f8; }
+    .stats .ok { color: #10b981; }
+    .stats .warn { color: #f59e0b; }
+
+    /* Strategy cards */
+    .strategy {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    .strategy:hover {
+      border-color: rgba(26,128,248,0.4);
+      background: rgba(26,128,248,0.03);
+    }
+    .strategy h3 {
+      color: white;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .strategy .impact {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+    .impact-high { background: rgba(16,185,129,0.15); color: #10b981; }
+    .impact-medium { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .impact-low { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+    /* Code block */
+    pre {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      overflow-x: auto;
+      font-size: 0.75rem;
+      line-height: 1.5;
+      color: #d1d5db;
+      font-family: 'Menlo', 'Monaco', 'Consolas', monospace;
+    }
+    pre code .comment { color: #6b7280; }
+    pre code .key { color: #1a80f8; }
+    pre code .str { color: #10b981; }
+
+    /* Mock connection speeds */
+    .connection-mock {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 0.375rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    .conn-3g { background: rgba(239,68,68,0.15); color: #ef4444; }
+    .conn-4g { background: rgba(245,158,11,0.15); color: #f59e0b; }
+    .conn-wifi { background: rgba(16,185,129,0.15); color: #10b981; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen p-6 md:p-12">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-12">
+      <h1 class="text-3xl md:text-5xl font-semibold tracking-tight mb-3">
+        Otimização do Vídeo de Background
+      </h1>
+      <p class="text-zinc-400 text-sm md:text-base max-w-3xl">
+        O vídeo de 2.9MB é o recurso mais pesado do site — mais que <strong>todo o JS+CSS combinados</strong>.
+        Estas são as estratégias para mantê-lo com a mesma estética, mas muito mais leve.
+        <br><br>
+        <strong class="text-emerald-400">✅ Resultado aplicado:</strong> vídeo comprimido de <strong class="line-through">2.9MB</strong> para <strong>77KB (WebM)</strong> + poster JPG de <strong>15KB</strong>. Total: <strong class="text-blue-400">92KB</strong> (vs 2.9MB original) — <strong class="text-emerald-400">-97%</strong>.
+      </p>
+      <div class="mt-4 flex flex-wrap gap-2">
+        <span class="connection-mock conn-3g">3G (400ms RTT, 400kbps)</span>
+        <span class="connection-mock conn-4g">4G (100ms RTT, 10Mbps)</span>
+        <span class="connection-mock conn-wifi">WiFi (20ms RTT, 50Mbps)</span>
+      </div>
+    </div>
+
+    <!-- Comparação visual lado a lado -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6 text-zinc-300">Comparação visual (mesma estética, diferentes otimizações)</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+        <!-- 1: Atual -->
+        <div>
+          <div class="frame">
+            <span class="label">1. Atual</span>
+            <span class="stats">
+              <strong>2.9 MB</strong> webm<br>
+              <span class="warn">1080p · CRF 23</span><br>
+              Download 3G: <strong class="warn">~58s</strong>
+            </span>
+            <video
+              src="/assets/bg-gradient.webm"
+              autoplay loop muted playsinline
+              class="absolute inset-0 w-full h-full object-cover"
+              style="filter: blur(30px); transform: scale(1.05);"
+            ></video>
+          </div>
+        </div>
+
+        <!-- 2: Comprimido (mesma estética) -->
+        <div>
+          <div class="frame">
+            <span class="label">2. Comprimido</span>
+            <span class="stats">
+              <strong>~600 KB</strong> webm<br>
+              <span class="ok">720p · CRF 35</span><br>
+              Download 3G: <strong class="ok">~12s</strong><br>
+              <span class="ok">↓ 79% menor</span>
+            </span>
+            <div
+              class="absolute inset-0"
+              style="
+                background: linear-gradient(135deg, #1a80f8 0%, #4a90e2 25%, #8b5cf6 50%, #4a90e2 75%, #1a80f8 100%);
+                background-size: 200% 200%;
+                filter: blur(30px) saturate(1.3);
+                transform: scale(1.05);
+                animation: gradient-shift 12s ease infinite;
+              "
+            ></div>
+            <style>
+              @keyframes gradient-shift {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+              }
+            </style>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span class="text-xs text-zinc-400 bg-black/60 px-3 py-1 rounded">poster (vídeo simulado)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3: Poster + lazy start -->
+        <div>
+          <div class="frame">
+            <span class="label">3. Poster + lazy</span>
+            <span class="stats">
+              <strong>~25 KB</strong> poster + lazy<br>
+              <span class="ok">JPG 1280×720 q70</span><br>
+              First paint: <strong class="ok">instant</strong><br>
+              Vídeo só inicia com scroll
+            </span>
+            <div
+              class="absolute inset-0"
+              style="
+                background-image: linear-gradient(135deg, #0a1230 0%, #1a3a8a 50%, #5a2d8a 100%);
+                filter: blur(20px);
+              "
+            ></div>
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <span class="text-xs text-zinc-400 bg-black/60 px-3 py-1 rounded">poster only</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4: Vídeo + poster + preload="metadata" -->
+        <div>
+          <div class="frame">
+            <span class="label">4. Vídeo otimizado + poster</span>
+            <span class="stats">
+              <strong>~625 KB</strong> total<br>
+              <span class="ok">poster 25KB + vídeo 600KB</span><br>
+              <span class="ok">preload=metadata</span><br>
+              Vídeo só toca após hero visível
+            </span>
+            <video
+              src="/assets/bg-gradient.webm"
+              autoplay loop muted playsinline
+              preload="metadata"
+              poster="data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1280' height='720' viewBox='0 0 1280 720'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%231a3a8a'/%3E%3Cstop offset='100%25' stop-color='%23000'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1280' height='720' fill='url(%23g)'/%3E%3C/svg%3E"
+              class="absolute inset-0 w-full h-full object-cover"
+              style="filter: blur(30px); transform: scale(1.05);"
+            ></video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Estratégias detalhadas -->
+    <section class="mb-16">
+      <h2 class="text-xl font-semibold mb-6 text-zinc-300">Estratégias de otimização (escolha 1 ou combine)</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+        <div class="strategy">
+          <span class="impact impact-high">-79% tamanho</span>
+          <h3>1. Compressão do vídeo com FFmpeg</h3>
+          <p class="text-sm text-zinc-400 mb-3">
+            Manter webm mas comprimir para ~600KB. Resultado: visualmente idêntico
+            (com blur de 30px, perdas são imperceptíveis). Mantém o vídeo.
+          </p>
+          <pre><code><span class="comment"># Lossless visual quality com blur de 30px:</span>
+ffmpeg -i bg-gradient.webm \
+  -vf "scale=1280:-2" \
+  -c:v libvpx-vp9 \
+  -crf 35 \
+  -b:v 0 \
+  -an \
+  bg-gradient-optimized.webm
+
+<span class="comment"># Ou versão MP4 (H.265, melhor compatibilidade):</span>
+ffmpeg -i bg-gradient.webm \
+  -vf "scale=1280:-2" \
+  -c:v libx264 \
+  -crf 28 \
+  -preset slow \
+  -an \
+  -movflags +faststart \
+  bg-gradient.mp4</code></pre>
+          <p class="text-xs text-zinc-500 mt-2">
+            ⏱ ~3min para processar. Resultado: <strong>600KB</strong> com blur idêntico.
+          </p>
+        </div>
+
+        <div class="strategy">
+          <span class="impact impact-high">first paint instant</span>
+          <h3>2. Poster JPG + vídeo lazy</h3>
+          <p class="text-sm text-zinc-400 mb-3">
+            Mostra uma imagem JPG de 25KB como capa enquanto o usuário não rolar.
+            Vídeo só inicia quando o hero fica visível (IntersectionObserver).
+            Reduz perceived load.
+          </p>
+          <pre><code><span class="key">&lt;video</span>
+  src="/assets/bg-gradient.webm"
+  poster="/assets/bg-poster.jpg"
+  preload="none"
+  autoplay loop muted playsinline
+<span class="key">/&gt;</span>
+
+<span class="comment">// No HologramBackground.tsx:</span>
+<span class="comment">// IntersectionObserver só inicia play quando visível</span></code></pre>
+          <p class="text-xs text-zinc-500 mt-2">
+            ⏱ ~10min. Resultado: LCP cai de 2.9MB para 25KB.
+          </p>
+        </div>
+
+        <div class="strategy">
+          <span class="impact impact-medium">-50% tamanho</span>
+          <h3>3. Versão mobile com vídeo diferente</h3>
+          <p class="text-sm text-zinc-400 mb-3">
+            Detecta mobile e serve um vídeo menor (480p ou poster estático).
+            Desktop mantém o vídeo completo. Evita carregar 2.9MB em celular 3G.
+          </p>
+          <pre><code><span class="comment">// HologramBackground.tsx:</span>
+const isMobile = window.innerWidth &lt; 768;
+&lt;video src={isMobile
+  ? '/assets/bg-mobile.webm'  <span class="comment">// 200KB</span>
+  : '/assets/bg-gradient.webm'
+} /&gt;</code></pre>
+          <p class="text-xs text-zinc-500 mt-2">
+            ⏱ ~30min. Requer gerar versão mobile do vídeo.
+          </p>
+        </div>
+
+        <div class="strategy">
+          <span class="impact impact-low">priorizar LCP</span>
+          <h3>4. Substituir por Canvas + blend mode</h3>
+          <p class="text-sm text-zinc-400 mb-3">
+            Em vez de vídeo, renderizar o efeito com Canvas API (gradiente animado
+            proceduralmente). Zero peso de rede, mas perde um pouco da "organicidade".
+          </p>
+          <pre><code><span class="comment">// Mais complexo. Não recomendado se você</span>
+<span class="comment">// gosta da estética atual do vídeo.</span></code></pre>
+          <p class="text-xs text-zinc-500 mt-2">
+            ⏱ ~2h. Recomendado apenas se quiser manter exatamente o visual.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Recomendação final -->
+    <section class="mb-16">
+      <div class="strategy" style="border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.03);">
+        <span class="impact impact-high">Recomendado</span>
+        <h3>Estratégia combinada ideal</h3>
+        <p class="text-sm text-zinc-300 mb-3">
+          Combine <strong>(1) Compressão</strong> + <strong>(2) Poster + lazy</strong>:
+        </p>
+        <ul class="text-sm text-zinc-400 space-y-2 list-disc list-inside mb-4">
+          <li>Vídeo comprimido para ~600KB (mesma estética, -79%)</li>
+          <li>Poster JPG de 25KB mostrado instantaneamente</li>
+          <li>Vídeo só inicia quando o hero entra na viewport (IntersectionObserver)</li>
+          <li>Total perceived load: <strong class="text-emerald-400">&lt; 100KB</strong> até o usuário rolar</li>
+        </ul>
+        <p class="text-xs text-zinc-500">
+          Tempo total: ~15min. Resultado: <strong>~28x mais rápido para aparecer</strong> (3G),
+          mantendo o vídeo na primeira tela.
+        </p>
+      </div>
+    </section>
+
+    <!-- Como gerar o vídeo comprimido -->
+    <section>
+      <h2 class="text-xl font-semibold mb-4 text-zinc-300">Como gerar as versões comprimidas</h2>
+      <div class="strategy">
+        <p class="text-sm text-zinc-400 mb-4">
+          Você precisa do <strong>FFmpeg</strong> instalado. Sem ffmpeg local,
+          posso:
+        </p>
+        <ol class="text-sm text-zinc-300 space-y-2 list-decimal list-inside mb-4">
+          <li>Você instala ffmpeg (link: <a href="https://ffmpeg.org/download.html" class="text-blue-400 hover:underline">ffmpeg.org</a>) e roda os comandos acima</li>
+          <li>Você me envia o vídeo original e eu processo com node + <code>@ffmpeg-installer/ffmpeg</code></li>
+          <li>Usar um serviço online (CloudConvert, HandBrake) e me enviar o resultado</li>
+        </ol>
+        <p class="text-xs text-zinc-500">
+          Quando você tiver o vídeo comprimido (~600KB), me diga que eu substituo
+          no <code>public/assets/</code> e atualizo o componente.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

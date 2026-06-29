@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <title>Background Preview - Sharkode</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .frame {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .label {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: white;
+      font-weight: 600;
+    }
+    .stats {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 10;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.7rem;
+      color: #d1d5db;
+    }
+    .stats strong { color: #1a80f8; }
+
+    /* --- OPTION 2: Soft animated gradient --- */
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+    .bg-soft {
+      background: linear-gradient(
+        135deg,
+        #000000 0%,
+        #050a1a 25%,
+        #0a1230 50%,
+        #050a1a 75%,
+        #000000 100%
+      );
+      background-size: 200% 200%;
+      animation: gradient-shift 12s ease infinite;
+    }
+    .bg-soft::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 30% 50%,
+        rgba(26, 128, 248, 0.18) 0%,
+        transparent 60%
+      );
+      animation: gradient-shift 18s ease infinite;
+    }
+    .bg-soft::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at 70% 50%,
+        rgba(139, 92, 246, 0.12) 0%,
+        transparent 60%
+      );
+      animation: gradient-shift 15s ease infinite reverse;
+    }
+
+    /* --- OPTION 3: Tech dots + pulsing glow --- */
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.05); }
+    }
+    @keyframes dot-drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 50px 50px; }
+    }
+    .bg-tech {
+      background: #000;
+    }
+    .bg-tech::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(26,128,248,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(26,128,248,0.06) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: dot-drift 20s linear infinite;
+    }
+    .bg-tech::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse, rgba(26, 128, 248, 0.35) 0%, transparent 60%);
+      filter: blur(60px);
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-white min-h-screen p-6 md:p-12">
+  <div class="max-w-7xl mx-auto">
+    <header class="mb-12">
+      <h1 class="text-3xl md:text-5xl font-semibold tracking-tight mb-3">
+        Background Preview
+      </h1>
+      <p class="text-zinc-400 text-sm md:text-base max-w-2xl">
+        Comparativo de 3 opções de background para o Hero. O atual usa vídeo de 2.9MB.
+        Avalie as alternativas em CSS puro (zero peso) lado a lado.
+      </p>
+    </header>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- OPTION 1: Video (current) -->
+      <div>
+        <div class="frame">
+          <span class="label">Opção 1 — Atual (vídeo)</span>
+          <span class="stats"><strong>2.9 MB</strong> · webm</span>
+          <video
+            src="/assets/bg-gradient.webm"
+            autoplay loop muted playsinline
+            class="absolute inset-0 w-full h-full object-cover"
+            style="filter: blur(30px); transform: scale(1.05);"
+          ></video>
+        </div>
+        <p class="text-xs text-zinc-500 mt-3 leading-relaxed">
+          <strong class="text-zinc-300">Prós:</strong> visual rico, movimento orgânico.<br>
+          <strong class="text-zinc-300">Contras:</strong> pesado (2.9MB), atrapalha LCP, autoplay bloqueado em iOS sem mute, consome bateria mobile.
+        </p>
+      </div>
+
+      <!-- OPTION 2: Soft animated gradient -->
+      <div>
+        <div class="frame">
+          <span class="label">Opção 2 — Gradiente suave</span>
+          <span class="stats"><strong>~0 KB</strong> · CSS puro</span>
+          <div class="bg-soft absolute inset-0"></div>
+        </div>
+        <p class="text-xs text-zinc-500 mt-3 leading-relaxed">
+          <strong class="text-zinc-300">Prós:</strong> zero peso, movimento sutil elegante, mesma vibe premium.<br>
+          <strong class="text-zinc-300">Contras:</strong> menos detalhe que o vídeo, animação mais lenta.
+        </p>
+      </div>
+
+      <!-- OPTION 3: Tech dots + pulsing glow -->
+      <div>
+        <div class="frame">
+          <span class="label">Opção 3 — Tech grid + glow</span>
+          <span class="stats"><strong>~0 KB</strong> · CSS puro</span>
+          <div class="bg-tech absolute inset-0"></div>
+        </div>
+        <p class="text-xs text-zinc-500 mt-3 leading-relaxed">
+          <strong class="text-zinc-300">Prós:</strong> visual "tech" mais marcante, grid alinhado ao branding.<br>
+          <strong class="text-zinc-300">Contras:</strong> mais carregado, pode competir com o H1.
+        </p>
+      </div>
+    </div>
+
+    <!-- Full preview of all three at real size -->
+    <section class="mt-16">
+      <h2 class="text-xl font-semibold mb-6 text-zinc-300">Preview em tela cheia (1280×720)</h2>
+      <div class="space-y-6">
+
+        <div class="frame" style="aspect-ratio: 16/9;">
+          <span class="label">Vídeo (atual)</span>
+          <video
+            src="/assets/bg-gradient.webm"
+            autoplay loop muted playsinline
+            class="absolute inset-0 w-full h-full object-cover"
+            style="filter: blur(30px); transform: scale(1.05);"
+          ></video>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <h1 class="text-5xl md:text-7xl font-medium text-white tracking-tight">Websites que mordem.</h1>
+          </div>
+        </div>
+
+        <div class="frame" style="aspect-ratio: 16/9;">
+          <span class="label">Gradiente CSS</span>
+          <div class="bg-soft absolute inset-0"></div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <h1 class="text-5xl md:text-7xl font-medium text-white tracking-tight">Websites que mordem.</h1>
+          </div>
+        </div>
+
+        <div class="frame" style="aspect-ratio: 16/9;">
+          <span class="label">Tech grid + glow</span>
+          <div class="bg-tech absolute inset-0"></div>
+          <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <h1 class="text-5xl md:text-7xl font-medium text-white tracking-tight">Websites que mordem.</h1>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mt-12 p-6 rounded-2xl border border-white/5 bg-zinc-900/40">
+      <h3 class="text-lg font-semibold mb-2">Como decidir</h3>
+      <ul class="text-sm text-zinc-400 space-y-1.5">
+        <li>• Olhe em <strong>3G simulado</strong> (DevTools → Network → Slow 3G): qual carrega mais rápido?</li>
+        <li>• Olhe no <strong>celular</strong>: o vídeo gasta bateria? Os CSS não.</li>
+        <li>• Olhe o <strong>Lighthouse</strong>: rode em cada versão para ver o impacto no LCP.</li>
+        <li>• Considere que o vídeo atual tem 2.9MB — quase 1MB a mais que <strong>todo o bundle JS do site</strong> (~88KB gzipped).</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>

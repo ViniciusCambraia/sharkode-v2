@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#000000"/>
+      <stop offset="100%" stop-color="#0a0a14"/>
+    </linearGradient>
+    <linearGradient id="text" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#60a5fa"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a80f8" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#1a80f8" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="600" cy="315" r="400" fill="url(#glow)"/>
+  <text x="600" y="280" text-anchor="middle" font-family="Inter, sans-serif" font-size="32" font-weight="600" fill="#9ca3af" letter-spacing="6">SHARKODE</text>
+  <text x="600" y="370" text-anchor="middle" font-family="Inter, sans-serif" font-size="64" font-weight="800" fill="url(#text)">Websites Premium</text>
+  <text x="600" y="430" text-anchor="middle" font-family="Inter, sans-serif" font-size="32" font-weight="400" fill="#d1d5db">&amp; Automações com IA</text>
+  <text x="600" y="540" text-anchor="middle" font-family="Inter, sans-serif" font-size="20" font-weight="400" fill="#6b7280">sharkode.com.br</text>
+</svg>
