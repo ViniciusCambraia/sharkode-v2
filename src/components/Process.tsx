@@ -11,19 +11,19 @@ const steps = [
   {
     number: '02',
     title: 'Design',
-    description: 'Conceitos, sistemas e protótipos que convertem — validados com seus usuários desde o início.',
-    tags: ['UX', 'UI', 'Brand'],
+    description: 'Conceitos, telas e protótipos que convertem — validados com seus clientes desde o início.',
+    tags: ['Experiência', 'Interface', 'Marca'],
   },
   {
     number: '03',
     title: 'Construção',
-    description: 'Engenharia escalável com analytics integrado desde o dia um. Do projeto ao ar em semanas, não trimestres.',
-    tags: ['Desenvolvimento', 'QA', 'Analytics'],
+    description: 'Desenvolvimento sólido, pronto para crescer e com dados de acesso desde o primeiro dia. Do projeto ao ar em semanas, não em trimestres.',
+    tags: ['Desenvolvimento', 'Testes', 'Dados'],
   },
   {
     number: '04',
     title: 'Escalar',
-    description: 'Medimos, iteramos e crescemos — transformando o momentum do lançamento em resultados compostos.',
+    description: 'Medimos, ajustamos e crescemos — transformando o impulso do lançamento em resultado que se acumula.',
     tags: ['Otimização', 'Suporte', 'Crescimento'],
   },
 ];
@@ -53,7 +53,7 @@ export default function Process() {
             style={{ fontSize: 'clamp(28px,4vw,52px)', lineHeight: 1.05, letterSpacing: '-.025em', maxWidth: '560px' }}
           >
             Um processo desenhado para{' '}
-            <em className="not-italic" style={{ color: 'var(--blue)' }}>momentum</em>
+            <em className="not-italic" style={{ color: 'var(--blue)' }}>resultado</em>
           </h2>
           <p className="text-white/40 font-grotesk" style={{ fontSize: 'clamp(14px,1vw,16px)' }}>
             Quatro fases focadas que levam você da ideia ao impacto — rápido.

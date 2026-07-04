@@ -8,6 +8,7 @@
   --blue: #1a80f8;
   --cyan: #19c7f7;
   --indigo: #3f19f7;
+  --purple: #c084fc;
   --amber: #f59e0b;
   --grok: 'Space Grotesk', sans-serif;
   --bd: rgba(255,255,255,.06);
@@ -16,38 +17,23 @@
   --w: 1200px;
 }
 
+/* Content container breathes above 1024px — was capped flat at 1200px,
+   leaving dead margins on large Macs / external monitors. */
+@media (min-width: 1280px) { :root { --w: 1280px; } }
+@media (min-width: 1536px) { :root { --w: 1360px; } }
+
 html {
   /* scroll-behavior handled by Lenis */
   scroll-behavior: auto;
 }
 
 body {
-  cursor: none;
   background-color: #07070f;
   color: #d1d5db;
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-}
-
-/* Custom cursor — restore pointer on interactive elements so cursor-none doesn't block UX hints */
-a, button, [data-cursor-hover] { cursor: none; }
-
-/* Ring expands on hover */
-.cursor-ring.cursor-hover {
-  width: 52px !important;
-  height: 52px !important;
-  margin-left: -26px !important;
-  margin-top: -26px !important;
-  border-color: rgba(26,128,248,.85) !important;
-}
-
-/* Hide cursor on touch devices */
-@media (hover: none) {
-  body { cursor: auto; }
-  a, button { cursor: auto; }
-  .cursor-ring, [data-cursor-dot] { display: none; }
 }
 
 /* Hide scrollbar utility (used in marquee rows) */
@@ -235,6 +221,33 @@ a:focus-visible {
   }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Masked word-reveal — cada linha sobe de trás de uma máscara de clip.
+   Portado do design system designer-studio-6. Uso: wrapper .mask-reveal com
+   um <span> filho por linha; o delay do stagger vem inline (animationDelay).
+   O padding-bottom dá folga pro rabo do "Q"/descendentes sem clipar. */
+.mask-reveal {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.mask-reveal > span {
+  display: block;
+  animation: maskReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mask-reveal > span { animation: none; }
+}
+@keyframes maskReveal {
+  from { transform: translateY(110%); }
+  to { transform: translateY(0); }
+}
+
 @keyframes fadeSlideDown {
   0% {
     opacity: 0;
@@ -415,4 +428,38 @@ a:focus-visible {
 }
 .gradient-border:hover::after {
   opacity: 1;
+}
+
+/* Skip rendering/layout of off-screen sections; `auto` remembers real height
+   after first paint so there's no scroll jump. ponytail: only on static,
+   non-ScrollTrigger sections below the fold. */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 800px;
+}
+
+/* Integrations hub: breathing glow */
+@keyframes hub-breathe {
+  0%, 100% { box-shadow: 0 0 46px rgba(26,128,248,.24), inset 0 1px 0 rgba(255,255,255,.08); }
+  50%      { box-shadow: 0 0 78px rgba(26,128,248,.46), inset 0 1px 0 rgba(255,255,255,.08); }
+}
+.hub-breathe { animation: hub-breathe 3.4s ease-in-out infinite; }
+
+/* Integrations beams: CSS-driven travel (stroke-dashoffset) + fade, so no
+   per-frame JS. Vars are set inline per beam; dasharray inherits from the <g>. */
+@keyframes beam-move {
+  from { stroke-dashoffset: var(--beam-start); }
+  to   { stroke-dashoffset: var(--beam-end); }
+}
+@keyframes beam-fade {
+  0%   { opacity: 0; }
+  7%   { opacity: 1; }
+  93%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+.beam-move { animation: beam-move var(--beam-dur) linear var(--beam-delay) infinite; }
+.beam-fade { animation: beam-fade var(--beam-dur) ease-in-out var(--beam-delay) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hub-breathe, .beam-move, .beam-fade { animation: none; }
 }

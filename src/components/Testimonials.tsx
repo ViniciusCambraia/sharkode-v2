@@ -17,14 +17,14 @@ const testimonials = [
     color: '#1a80f8',
   },
   {
-    quote: 'Pela primeira vez o marketing edita o site sozinho, sem depender de dev. A entrega foi impecável e o SEO técnico já aparece nos resultados.',
+    quote: 'Pela primeira vez o marketing edita o site sozinho, sem depender de programador. A entrega foi impecável e já aparecemos no topo do Google.',
     name: 'Camila Bertolini',
     role: 'Head de Ops, Mapa Soluções',
     initials: 'CB',
     color: '#3f19f7',
   },
   {
-    quote: 'Performance Lighthouse 97, zero bugs em produção e entregue duas semanas antes do prazo. Difícil não recomendar.',
+    quote: 'O site abre num piscar de olhos, sem nenhum erro no ar e entregue duas semanas antes do prazo. Difícil não recomendar.',
     name: 'Lucas Faria',
     role: 'CTO, Helios Cloud',
     initials: 'LF',

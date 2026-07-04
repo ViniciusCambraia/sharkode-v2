@@ -32,7 +32,7 @@ const projects: Project[] = [
     client: 'Cliente 01',
     category: 'websites',
     description:
-      'Site institucional com foco em autoridade, performance Lighthouse 95+ e SEO técnico desde o primeiro deploy.',
+      'Site institucional com foco em autoridade, que abre num piscar de olhos e já nasce pronto para o Google.',
     tags: ['Next.js', 'GSAP', 'Tailwind'],
     accent: '#1a80f8',
     logo: '/assets/exiG9qhtf9QdtnV7cIbg2ywMUHI.webp',
@@ -42,17 +42,17 @@ const projects: Project[] = [
     client: 'Cliente 02',
     category: 'websites',
     description:
-      'Landing page otimizada para campanhas pagas com tracking completo e copy persuasivo.',
+      'Landing page otimizada para campanhas pagas, com medição completa dos resultados e textos que convencem.',
     tags: ['React', 'Vite', 'Meta Ads'],
     accent: '#f59e0b',
     logo: '/assets/vC5lp4HvRONXuKBbrvquFHfETvk.webp',
   },
   {
-    title: 'Plataforma SaaS sob Medida',
+    title: 'Sistema Web sob Medida',
     client: 'Cliente 03',
     category: 'systems',
     description:
-      'Sistema de gestão interno com login, dashboards e integração com APIs externas.',
+      'Sistema de gestão interno com área de login, painéis de controle e integração com outras ferramentas.',
     tags: ['React', 'Node.js', 'Postgres'],
     accent: '#3f19f7',
     logo: '/assets/4ZY54wo5xaWkaEmDlNnnNXGXP8.webp',
@@ -62,7 +62,7 @@ const projects: Project[] = [
     client: 'Cliente 04',
     category: 'automation',
     description:
-      'Agentes de IA que automatizam atendimento, qualificam leads e integram WhatsApp + CRM.',
+      'IA que automatiza o atendimento, organiza os contatos e integra o WhatsApp ao seu sistema de vendas.',
     tags: ['n8n', 'OpenAI', 'WhatsApp API'],
     accent: '#10b981',
     logo: '/assets/FVUAhuM0WzF5Sj8VhwNxmWk7Gfs.webp',

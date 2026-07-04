@@ -41,7 +41,7 @@ export default function Stats() {
       >
         <StatCell value={200} suffix="+" label="Projetos Entregues" />
         <StatCell value={98}  suffix="%" label="Retenção de Clientes" />
-        <StatCell value={95}  suffix=""  label="Lighthouse Médio" />
+        <StatCell value={95}  suffix="/100"  label="Nota de Velocidade" />
         <StatCell value={5}   suffix="+" label="Anos de Mercado" last />
       </div>
     </section>

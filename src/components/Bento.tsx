@@ -85,7 +85,7 @@ export default function Bento() {
             className="font-grotesk font-bold text-white"
             style={{ fontSize: 'clamp(28px,4vw,52px)', lineHeight: 1.08, letterSpacing: '-.025em', maxWidth: '640px' }}
           >
-            Craft que gera <em className="not-italic" style={{ color: 'var(--blue)' }}>resultados</em>
+            Excelência que gera <em className="not-italic" style={{ color: 'var(--blue)' }}>resultados</em>
           </h2>
         </div>
 
@@ -108,7 +108,7 @@ export default function Bento() {
                 <h3 className="font-grotesk font-bold text-white text-[22px] mb-3 leading-tight">Entrega ultra-rápida</h3>
               </div>
               <p className="text-white/45 text-sm leading-relaxed">
-                Lighthouse 95+ em todas as métricas. Carregamento abaixo de 1.2s, Core Web Vitals no verde e SEO técnico de primeira.
+                Seu site abre em menos de 1,2 segundo. Rápido em qualquer conexão e pronto para o Google desde o primeiro dia.
               </p>
             </div>
 
@@ -121,7 +121,7 @@ export default function Bento() {
                     strokeDasharray="157" strokeDashoffset="32" style={{ filter: 'drop-shadow(0 0 6px #1a80f8)' }} />
                   <text x="60" y="58" textAnchor="middle" fill="white" fontFamily="Syncopate, sans-serif" fontWeight="700" fontSize="20">95</text>
                 </svg>
-                <span className="font-grotesk text-[10px] tracking-[.12em] uppercase text-white/30">Lighthouse Score</span>
+                <span className="font-grotesk text-[10px] tracking-[.12em] uppercase text-white/30">Nota de Velocidade</span>
               </div>
 
               <div className="grid grid-cols-2 pt-5" style={{ borderTop: '1px solid var(--bd)' }}>
@@ -150,7 +150,7 @@ export default function Bento() {
             <Eyebrow color="var(--purple)">Flexível &amp; Escalável</Eyebrow>
             <h3 className="font-grotesk font-bold text-white text-xl mb-2 leading-tight">Escale sem limites</h3>
             <p className="text-white/45 text-sm leading-relaxed max-w-[62%]">
-              Da prototipagem à produção sem fricção — arquitetura pensada para crescer junto com o seu negócio.
+              Do primeiro rascunho ao ar sem tropeços — construído para crescer junto com o seu negócio.
             </p>
 
             {/* Momentum pill */}
@@ -159,7 +159,7 @@ export default function Bento() {
               style={{ borderColor: 'rgba(63,25,247,.25)', background: 'rgba(63,25,247,.08)' }}
             >
               <span className="w-1.5 h-1.5 rounded-full" style={{ background: '#a78bfa', boxShadow: '0 0 8px #a78bfa' }} />
-              <span className="font-grotesk text-[11px] font-medium text-white/65">Momentum ativado</span>
+              <span className="font-grotesk text-[11px] font-medium text-white/65">No ritmo certo</span>
             </div>
 
             {/* Isometric 3D cube */}
@@ -207,13 +207,13 @@ export default function Bento() {
                 style={{ borderColor: 'var(--bd)', background: 'rgba(255,255,255,.03)' }}
               >
                 <span className="font-syncopate font-bold text-white text-[15px] leading-none">74.2K</span>
-                <span className="font-grotesk text-[9px] tracking-[.08em] uppercase text-white/30 mt-1">Sinais rastreados</span>
+                <span className="font-grotesk text-[9px] tracking-[.08em] uppercase text-white/30 mt-1">Dados coletados</span>
               </div>
 
-              <Eyebrow color="#4ade80">Insights em Tempo Real</Eyebrow>
-              <h3 className="font-grotesk font-bold text-white text-[22px] mb-3 leading-tight">Monitore. Analise. Otimize.</h3>
+              <Eyebrow color="#4ade80">Números em Tempo Real</Eyebrow>
+              <h3 className="font-grotesk font-bold text-white text-[22px] mb-3 leading-tight">Monitore. Analise. Decida.</h3>
               <p className="text-white/45 text-sm leading-relaxed">
-                Dashboards, analytics e métricas que você entende. Dados que viram decisão.
+                Painéis e números que você entende de verdade. Dados que viram decisão.
               </p>
             </div>
 
@@ -255,9 +255,9 @@ export default function Bento() {
                 </svg>
               </div>
               <div>
-                <Eyebrow>Enterprise Grade</Eyebrow>
+                <Eyebrow>Segurança de Verdade</Eyebrow>
                 <h4 className="font-grotesk font-bold text-white text-[15px] leading-tight mb-1">Seguro por padrão</h4>
-                <p className="text-white/35 text-xs leading-relaxed">Segurança, compliance e privacidade em cada camada.</p>
+                <p className="text-white/35 text-xs leading-relaxed">Segurança e privacidade dos seus dados em cada detalhe.</p>
               </div>
               <svg className="mt-3" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#19c7f7" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
@@ -274,9 +274,9 @@ export default function Bento() {
                 </svg>
               </div>
               <div>
-                <Eyebrow color="var(--purple)">Developer First</Eyebrow>
-                <h4 className="font-grotesk font-bold text-white text-[15px] leading-tight mb-1">Feito para builders</h4>
-                <p className="text-white/35 text-xs leading-relaxed">Código limpo, design tokens e quickstarts.</p>
+                <Eyebrow color="var(--purple)">Base Sólida</Eyebrow>
+                <h4 className="font-grotesk font-bold text-white text-[15px] leading-tight mb-1">Feito para durar</h4>
+                <p className="text-white/35 text-xs leading-relaxed">Código limpo e organizado, fácil de manter e evoluir.</p>
               </div>
               <svg className="mt-3" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />

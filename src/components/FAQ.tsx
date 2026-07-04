@@ -15,12 +15,12 @@ const faqs = [
     a: 'Landing pages em 7-14 dias úteis, sites institucionais em 21-35 dias, sistemas e automações variam conforme escopo. Cronograma detalhado é aprovado antes do início.',
   },
   {
-    q: 'Vocês também produzem conteúdo e copy?',
-    a: 'Sim. Operamos com copywriters e designers parceiros e cuidamos de ponta a ponta — pesquisa, textos, identidade visual. Ou trabalhamos com material que você já tem.',
+    q: 'Vocês também produzem conteúdo e textos?',
+    a: 'Sim. Contamos com redatores e designers parceiros e cuidamos de ponta a ponta — pesquisa, textos, identidade visual. Ou trabalhamos com material que você já tem.',
   },
   {
-    q: 'O site já vem com SEO configurado?',
-    a: 'Sim. Todo projeto sai com meta tags, Open Graph, schema.org, sitemap, robots.txt e performance Lighthouse 90+. SEO de conteúdo (blog, palavras-chave) pode ser contratado à parte.',
+    q: 'O site já vem pronto para aparecer no Google?',
+    a: 'Sim. Todo projeto já sai preparado para o Google encontrar e exibir seu site corretamente — inclusive com uma prévia bonita quando alguém compartilha o link, e carregando rápido de verdade. Trabalho de conteúdo (blog e palavras-chave) pode ser contratado à parte.',
   },
   {
     q: 'De quem fica o código depois da entrega?',

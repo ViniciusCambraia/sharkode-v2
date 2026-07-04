@@ -144,17 +144,17 @@ function InsightsDashWidget() {
 const cards = [
   {
     title: 'Análise de Sentimento',
-    desc: 'Mensure o interesse dos clientes com insights orientados por IA em todos os projetos.',
+    desc: 'Entenda o interesse dos seus clientes com análises feitas por IA em todos os projetos.',
     widget: <UserGrowthWidget />,
   },
   {
-    title: 'Insights com IA',
-    desc: 'Insights de IA capacitam equipes com análise de dados em tempo real.',
+    title: 'Análises com IA',
+    desc: 'A inteligência artificial entrega análise de dados em tempo real para sua equipe decidir na hora.',
     widget: <SalesChartWidget />,
   },
   {
-    title: 'Dashboard de Performance',
-    desc: 'O dashboard de performance oferece insights em tempo real de forma imediata.',
+    title: 'Painel de Resultados',
+    desc: 'Um painel simples que mostra os seus resultados em tempo real, na hora.',
     widget: <InsightsDashWidget />,
   },
 ];

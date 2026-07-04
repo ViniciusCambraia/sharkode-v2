@@ -69,13 +69,18 @@ export default function Hero() {
         {/* H1 — two lines */}
         <h1
           className="font-syncopate font-bold text-white uppercase leading-[0.92] mb-8"
-          style={{ fontSize: 'clamp(44px,7vw,96px)', letterSpacing: '-.02em' }}
+          style={{ fontSize: 'clamp(44px,min(7vw,9.5vh),96px)', letterSpacing: '-.02em' }}
         >
-          <span className="block">WEBSITES</span>
-          <span
-            className="block bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent"
-          >
-            QUE MORDEM.
+          <span className="mask-reveal">
+            <span style={{ animationDelay: '0.35s' }}>WEBSITES</span>
+          </span>
+          <span className="mask-reveal">
+            <span
+              className="bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent"
+              style={{ animationDelay: '0.5s' }}
+            >
+              QUE MORDEM.
+            </span>
           </span>
         </h1>
 
@@ -85,8 +90,8 @@ export default function Hero() {
             className="font-grotesk text-[15px] leading-relaxed mb-8"
             style={{ color: 'rgba(255,255,255,.45)' }}
           >
-            Sites institucionais, landing pages e sistemas web sob medida —
-            com SEO técnico, performance Lighthouse 95+ e integrações com IA
+            Sites institucionais, páginas de venda e sistemas sob medida —
+            rápidos, fáceis de achar no Google e com automações de IA
             que transformam visitantes em clientes.
           </p>
 

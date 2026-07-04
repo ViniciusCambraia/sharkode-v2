@@ -5,9 +5,9 @@ const capabilities = [
   {
     num: '01',
     cat: 'DESIGN',
-    title: 'Brand systems',
-    body: 'Identidades, design systems e linguagens visuais construídas para converter em qualquer superfície.',
-    tags: ['UI / UX', 'Design System', 'Identidade Visual'],
+    title: 'Marca & Identidade',
+    body: 'Identidade visual, logo e um visual consistente que faz sua marca ser lembrada — e escolhida — em qualquer tela.',
+    tags: ['Identidade Visual', 'Logo', 'Design'],
     accent: '#1a80f8',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -17,10 +17,10 @@ const capabilities = [
   },
   {
     num: '02',
-    cat: 'PRODUCT',
-    title: 'Product design',
-    body: 'Fluxos UX, interfaces e protótipos validados com usuários reais — projetados para converter desde o dia um.',
-    tags: ['UX', 'UI', 'Prototipagem'],
+    cat: 'PRODUTO',
+    title: 'Design de Experiência',
+    body: 'Telas e caminhos pensados para o seu cliente entender rápido e agir — testados com gente de verdade, não no chute.',
+    tags: ['Experiência', 'Interface', 'Protótipo'],
     accent: '#3f19f7',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -30,10 +30,10 @@ const capabilities = [
   },
   {
     num: '03',
-    cat: 'BUILD',
-    title: 'Engineering',
-    body: 'Plataformas escaláveis com analytics integrado desde o início. Do projeto ao ar em semanas, não trimestres.',
-    tags: ['React', 'Next.js', 'APIs'],
+    cat: 'DESENVOLVIMENTO',
+    title: 'Desenvolvimento',
+    body: 'Sites e sistemas sólidos, prontos para crescer com o seu negócio. Do projeto ao ar em semanas, não em trimestres.',
+    tags: ['React', 'Next.js', 'Integrações'],
     accent: '#10a37f',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -43,10 +43,10 @@ const capabilities = [
   },
   {
     num: '04',
-    cat: 'GROWTH',
-    title: 'Growth & motion',
-    body: 'Medição, iteração e automações que transformam momentum de lançamento em resultados compostos.',
-    tags: ['Analytics', 'SEO', 'CRO'],
+    cat: 'CRESCIMENTO',
+    title: 'Crescimento',
+    body: 'Medimos, ajustamos e automatizamos para transformar o impulso do lançamento em resultado que se acumula mês a mês.',
+    tags: ['Dados', 'Google', 'Conversão'],
     accent: '#f59e0b',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

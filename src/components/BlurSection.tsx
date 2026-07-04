@@ -7,7 +7,7 @@ function ease(t: number) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2,
 
 const floatCards = [
   {
-    id: 1, label: 'Estratégia', sub: 'Research & Posicionamento',
+    id: 1, label: 'Estratégia', sub: 'Pesquisa & Posicionamento',
     icon: (
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
@@ -17,7 +17,7 @@ const floatCards = [
     pos: { top: '9%', left: '6%' },
   },
   {
-    id: 2, label: 'Crescimento', sub: 'Crescimento composto',
+    id: 2, label: 'Crescimento', sub: 'Resultado que se acumula',
     icon: (
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
@@ -27,7 +27,7 @@ const floatCards = [
     pos: { bottom: '9%', left: '6%' },
   },
   {
-    id: 3, label: 'Craft', sub: 'Design com propósito',
+    id: 3, label: 'Capricho', sub: 'Design com propósito',
     icon: (
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <circle cx="12" cy="12" r="3" /><circle cx="12" cy="12" r="8" />
@@ -37,7 +37,7 @@ const floatCards = [
     pos: { top: '9%', right: '6%' },
   },
   {
-    id: 4, label: 'Build', sub: 'Código de alta performance',
+    id: 4, label: 'Desenvolvimento', sub: 'Código rápido e sólido',
     icon: (
       <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />

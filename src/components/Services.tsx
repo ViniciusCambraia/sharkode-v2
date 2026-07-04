@@ -15,31 +15,31 @@ const services = [
     icon: Monitor,
     title: 'Landing Pages',
     description:
-      'Páginas de alta conversão focadas em captura de leads e performance publicitária.',
+      'Páginas feitas para uma coisa só: transformar visitantes em contatos e vendas.',
   },
   {
     icon: Workflow,
     title: 'Sistemas e Portais',
     description:
-      'Plataformas web robustas com login, dashboards e integrações sob medida.',
+      'Sistemas sob medida com área de login, painéis de controle e integração com as ferramentas que você já usa.',
   },
   {
     icon: Zap,
-    title: 'Performance & SEO',
+    title: 'Rápido e Achado no Google',
     description:
-      'Carregamento instantâneo, Core Web Vitals no verde e ranqueamento orgânico.',
+      'Site que abre num piscar de olhos e aparece para quem procura você no Google.',
   },
   {
     icon: Shield,
-    title: 'Design Responsivo',
+    title: 'Perfeito em Qualquer Tela',
     description:
-      'Experiências pixel-perfect em qualquer dispositivo, do mobile ao ultrawide.',
+      'Impecável no celular, no tablet e no computador — sem quebrar em nenhum tamanho.',
   },
   {
     icon: Database,
     title: 'Automações com IA',
     description:
-      'Agentes inteligentes, fluxos n8n e integrações que reduzem tarefas manuais em 80%.',
+      'Inteligência artificial e integrações que assumem tarefas repetitivas e reduzem o trabalho manual em até 80%.',
   },
 ];
 

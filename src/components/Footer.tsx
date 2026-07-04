@@ -22,7 +22,7 @@ const columns = [
   {
     title: 'Recursos',
     links: [
-      { label: 'Calculadora ROI', href: '#calculator' },
+      { label: 'Calculadora de Retorno', href: '#calculator' },
       { label: 'Diagnóstico', href: '#contact' },
       { label: 'Contato', href: '#contact' },
     ],
@@ -65,7 +65,7 @@ export default function Footer() {
             <img
               src="/SALVA_AI_GARAIO.webp"
               alt="Sharkode"
-              className="h-7 w-7 shark-glow-nav"
+              className="h-7 w-auto shark-glow-nav"
             />
           </a>
           <p className="type-body text-xs text-zinc-500">

@@ -29,61 +29,48 @@ export default function Manifesto() {
           }}
         />
 
-        {/* Expanding frame */}
+        {/* Expanding frame (decorative — sits behind the text) */}
         <div
           style={{
+            position: 'absolute',
             width,
             height,
             background: 'rgba(255,255,255,.022)',
             border: '1px solid rgba(255,255,255,.08)',
             borderRadius: radius,
             overflow: 'hidden',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            padding: 'clamp(40px,6vw,80px) clamp(32px,5vw,80px)',
             boxShadow: '0 0 80px rgba(26,128,248,.06) inset',
             transition: 'none',
+            zIndex: 1,
           }}
-        >
-          {/* Veil overlay */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'rgba(0,0,0,.82)',
-              opacity: veilOp,
-              pointerEvents: 'none',
-              zIndex: 5,
-            }}
-          />
+        />
 
+        {/* Text block — constant width, never reflows as the frame grows */}
+        <div
+          className="relative text-center"
+          style={{ width: 'min(860px, 86vw)', zIndex: 2 }}
+        >
           {/* Label */}
           <div
-            className="font-grotesk text-[11px] font-semibold tracking-[.14em] uppercase mb-6 relative"
-            style={{ zIndex: 1, color: 'rgba(255,255,255,.35)' }}
+            className="font-grotesk text-[11px] font-semibold tracking-[.14em] uppercase mb-6"
+            style={{ color: 'rgba(255,255,255,.35)' }}
           >
             Nosso Manifesto
           </div>
 
           {/* Text */}
           <p
-            className="font-grotesk font-bold leading-[1.15] relative"
+            className="font-grotesk font-bold leading-[1.15]"
             style={{
-              fontSize: 'clamp(24px,3.5vw,52px)',
+              fontSize: 'clamp(24px,min(3.5vw,5vh),52px)',
               color: 'rgba(255,255,255,.9)',
-              maxWidth: '860px',
               letterSpacing: '-.02em',
-              zIndex: 1,
             }}
           >
             Acreditamos que sites incríveis não são apenas{' '}
             <strong style={{ color: 'var(--blue)' }}>construídos</strong> — eles são{' '}
             <em className="not-italic" style={{ color: 'var(--purple)' }}>dominados.</em>{' '}
-            Estratégia define a direção, craft dá a alma, e{' '}
+            Estratégia define a direção, o capricho dá a alma, e{' '}
             <em
               className="not-italic"
               style={{
@@ -93,12 +80,24 @@ export default function Manifesto() {
                 backgroundClip: 'text',
               }}
             >
-              performance implacável
+              velocidade implacável
             </em>{' '}
             transforma ideias ousadas em{' '}
             <strong style={{ color: 'var(--blue)' }}>resultados reais.</strong>
           </p>
         </div>
+
+        {/* Veil overlay — fades the whole stack out near the end */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'rgba(0,0,0,.82)',
+            opacity: veilOp,
+            pointerEvents: 'none',
+            zIndex: 3,
+          }}
+        />
       </div>
     </section>
   );

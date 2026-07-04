@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 const cases = [
   {
     accent: '#10b981',
-    tag: 'BRANDING + IDENTIDADE',
+    tag: 'MARCA + IDENTIDADE',
     title: 'RR Farma',
     badge: { icon: '↑', text: '+120% reconhecimento' },
     bg: 'linear-gradient(160deg,#080e0b 0%,#071210 100%)',
@@ -26,7 +26,7 @@ const cases = [
     accent: '#19c7f7',
     tag: 'SITE INSTITUCIONAL',
     title: 'Luz de Cristo',
-    badge: { icon: '✦', text: 'Lighthouse 97' },
+    badge: { icon: '✦', text: 'Abre em 1 segundo' },
     bg: 'linear-gradient(160deg,#050810 0%,#070b18 100%)',
     image: '/assets/ui1Dx6RLaNfihwrW7ucriC0rFKk.webp',
   },

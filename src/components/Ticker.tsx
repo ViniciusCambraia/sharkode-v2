@@ -1,6 +1,6 @@
 const items = [
-  'Design Web', 'Analytics', 'Estratégia de Produto', 'Motion',
-  'Desenvolvimento', 'Branding', 'Performance', 'Automação com IA',
+  'Design Web', 'Dados', 'Estratégia de Produto', 'Animações',
+  'Desenvolvimento', 'Marca', 'Velocidade', 'Automação com IA',
 ];
 
 function TickerContent() {

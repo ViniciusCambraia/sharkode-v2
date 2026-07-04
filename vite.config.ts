@@ -10,6 +10,19 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            // Heavy 3D stack — kept out of the main vendor/react chunks so it
+            // only loads on the lazy /contato route, never on the home page.
+            if (
+              id.includes('/three/') ||
+              id.includes('@react-three') ||
+              id.includes('meshline') ||
+              id.includes('@dimforge')
+            ) {
+              return 'three';
+            }
+            if (id.includes('react-router')) {
+              return 'react';
+            }
             if (id.includes('react') || id.includes('react-dom')) {
               return 'react';
             }

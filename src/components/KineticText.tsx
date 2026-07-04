@@ -32,7 +32,7 @@ export default function KineticText() {
       <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
         <div
           className="max-w-[1100px] px-10 text-center"
-          style={{ fontSize: 'clamp(44px,9vw,120px)', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.05, letterSpacing: '-.04em' }}
+          style={{ fontSize: 'clamp(44px,min(9vw,12vh),120px)', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.05, letterSpacing: '-.04em' }}
         >
           {words.map((word, i) => {
             // how lit is this word? 0→1 over a 0.15-wide window ending at threshold

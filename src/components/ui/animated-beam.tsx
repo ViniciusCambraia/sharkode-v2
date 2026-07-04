@@ -1,74 +1,106 @@
-import { motion } from 'framer-motion';
 import { useEffect, useId, useRef, useState } from 'react';
 
-interface AnimatedBeamProps {
-  containerRef: React.RefObject<HTMLElement | null>;
+// prefers-reduced-motion, no framer-motion dependency
+function useReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduce(mq.matches);
+    const onChange = () => setReduce(mq.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+  return reduce;
+}
+
+export interface Beam {
   fromRef: React.RefObject<HTMLElement | null>;
   toRef: React.RefObject<HTMLElement | null>;
-  color?: string;
-  duration?: number;
-  delay?: number;
+  color: string;
+  delay: number;
   reverse?: boolean;
 }
 
-export function AnimatedBeam({
-  containerRef,
-  fromRef,
-  toRef,
-  color = '#1a80f8',
-  duration = 2.5,
-  delay = 0,
-  reverse = false,
-}: AnimatedBeamProps) {
-  const id = useId();
-  const [path, setPath] = useState('');
-  const [pathLength, setPathLength] = useState(0);
-  const pathRef = useRef<SVGPathElement>(null);
+interface BeamFieldProps {
+  containerRef: React.RefObject<HTMLElement | null>;
+  beams: Beam[];
+  duration?: number;
+  hubRef?: React.RefObject<HTMLElement | null>;
+}
 
+/**
+ * All connector beams in a SINGLE <svg> sharing ONE glow filter (was 10 SVGs +
+ * 10 filters). Animations only mount while the diagram is on-screen (Intersection
+ * Observer) and fall back to static lines under prefers-reduced-motion.
+ */
+export function BeamField({ containerRef, beams, duration = 2.5, hubRef }: BeamFieldProps) {
+  const id = useId();
+  const reduce = useReducedMotion();
+  const [paths, setPaths] = useState<string[]>([]);
+  const [lengths, setLengths] = useState<number[]>([]);
+  const [active, setActive] = useState(false);
+  const [hub, setHub] = useState<{ x: number; y: number; r: number } | null>(null);
+  const pathRefs = useRef<(SVGPathElement | null)[]>([]);
+
+  // Compute every path in one pass (mount + resize).
   useEffect(() => {
     function update() {
       const container = containerRef.current;
-      const from = fromRef.current;
-      const to = toRef.current;
-      if (!container || !from || !to) return;
-
+      if (!container) return;
       const cr = container.getBoundingClientRect();
-      const fr = from.getBoundingClientRect();
-      const tr = to.getBoundingClientRect();
-
-      // Connect at the edges facing each other (never cross the icon body)
-      const fCx = fr.left + fr.width / 2;
-      const tCx = tr.left + tr.width / 2;
-      const fromIsLeft = fCx < tCx;
-
-      const fx = (fromIsLeft ? fr.right : fr.left) - cr.left;
-      const tx = (fromIsLeft ? tr.left : tr.right) - cr.left;
-      const fy = fr.top + fr.height / 2 - cr.top;
-      const ty = tr.top + tr.height / 2 - cr.top;
-
-      // Cubic bezier: exit horizontally from source, arrive horizontally at target
-      const dist = Math.abs(tx - fx);
-      const curvature = Math.max(60, dist * 0.35);
-      setPath(`M${fx},${fy} C${fx + curvature},${fy} ${tx - curvature},${ty} ${tx},${ty}`);
+      const h = hubRef?.current;
+      if (h) {
+        const hr = h.getBoundingClientRect();
+        setHub({
+          x: hr.left + hr.width / 2 - cr.left,
+          y: hr.top + hr.height / 2 - cr.top,
+          r: cr.width * 0.55,
+        });
+      }
+      setPaths(
+        beams.map(({ fromRef, toRef }) => {
+          const from = fromRef.current;
+          const to = toRef.current;
+          if (!from || !to) return '';
+          const fr = from.getBoundingClientRect();
+          const tr = to.getBoundingClientRect();
+          const fCx = fr.left + fr.width / 2;
+          const tCx = tr.left + tr.width / 2;
+          const fromIsLeft = fCx < tCx;
+          const fx = (fromIsLeft ? fr.right : fr.left) - cr.left;
+          const tx = (fromIsLeft ? tr.left : tr.right) - cr.left;
+          const fy = fr.top + fr.height / 2 - cr.top;
+          const ty = tr.top + tr.height / 2 - cr.top;
+          const dist = Math.abs(tx - fx);
+          const curvature = Math.max(60, dist * 0.35);
+          return `M${fx},${fy} C${fx + curvature},${fy} ${tx - curvature},${ty} ${tx},${ty}`;
+        }),
+      );
     }
-
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
-  }, [containerRef, fromRef, toRef]);
+  }, [containerRef, beams, hubRef]);
 
+  // Measure lengths once the paths are in the DOM.
   useEffect(() => {
-    if (pathRef.current && path) {
-      setPathLength(pathRef.current.getTotalLength());
-    }
-  }, [path]);
+    if (!paths.length) return;
+    setLengths(paths.map((_, i) => pathRefs.current[i]?.getTotalLength() ?? 0));
+  }, [paths]);
 
-  if (!path) return null;
+  // Pause all animation work when the diagram is scrolled out of view.
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([e]) => setActive(e.isIntersecting), {
+      rootMargin: '120px',
+    });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [containerRef]);
 
-  const glowId = `glow-${id}`;
+  const railId = `beam-rail-${id}`;
   const beamLen = 80;
-  const start = reverse ? -beamLen : pathLength + beamLen;
-  const end   = reverse ? pathLength + beamLen : -beamLen;
 
   return (
     <svg
@@ -76,39 +108,76 @@ export function AnimatedBeam({
       style={{ width: '100%', height: '100%', zIndex: 0 }}
     >
       <defs>
-        <filter id={glowId} x="-60%" y="-60%" width="220%" height="220%">
-          <feGaussianBlur stdDeviation="2" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
+        {/* Rails glow brighter near the hub and fade toward the nodes */}
+        {hub && (
+          <radialGradient id={railId} gradientUnits="userSpaceOnUse" cx={hub.x} cy={hub.y} r={hub.r}>
+            <stop offset="0" stopColor="rgba(255,255,255,0.22)" />
+            <stop offset="0.6" stopColor="rgba(255,255,255,0.08)" />
+            <stop offset="1" stopColor="rgba(255,255,255,0.02)" />
+          </radialGradient>
+        )}
       </defs>
 
-      {/* Dim base line */}
-      <path d={path} fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="1.2" />
-
-      {/* Invisible path used for length calculation */}
-      <path ref={pathRef} d={path} fill="none" stroke="none" />
-
-      {/* Animated beam */}
-      {pathLength > 0 && (
-        <motion.path
-          d={path}
-          fill="none"
-          stroke={color}
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeDasharray={`${beamLen} ${pathLength + beamLen * 2}`}
-          filter={`url(#${glowId})`}
-          initial={{ strokeDashoffset: start, opacity: 0 }}
-          animate={{ strokeDashoffset: [start, end], opacity: [0, 1, 1, 0] }}
-          transition={{
-            duration,
-            delay,
-            repeat: Infinity,
-            ease: 'easeInOut',
-            times: [0, 0.07, 0.93, 1],
-          }}
-        />
+      {/* Always-on base rails + invisible measuring paths */}
+      {paths.map((d, i) =>
+        d ? (
+          <path
+            key={`base-${i}`}
+            d={d}
+            fill="none"
+            stroke={hub ? `url(#${railId})` : 'rgba(255,255,255,0.08)'}
+            strokeWidth="1.4"
+          />
+        ) : null,
       )}
+      {paths.map((d, i) =>
+        d ? (
+          <path
+            key={`measure-${i}`}
+            ref={(el) => {
+              pathRefs.current[i] = el;
+            }}
+            d={d}
+            fill="none"
+            stroke="none"
+          />
+        ) : null,
+      )}
+
+      {/* Moving beams — only while visible and motion is allowed.
+          Glow is a wide translucent "halo" stroke under a sharp core (2 cheap
+          strokes) instead of an feGaussianBlur that re-rasterizes every frame.
+          The travel + fade run as CSS animations, so there's no per-frame JS. */}
+      {active &&
+        !reduce &&
+        beams.map((b, i) => {
+          const d = paths[i];
+          const len = lengths[i];
+          if (!d || !len) return null;
+          const start = b.reverse ? -beamLen : len + beamLen;
+          const end = b.reverse ? len + beamLen : -beamLen;
+          const groupStyle = {
+            '--beam-start': `${start}`,
+            '--beam-end': `${end}`,
+            '--beam-dur': `${duration}s`,
+            '--beam-delay': `${b.delay}s`,
+            strokeDasharray: `${beamLen} ${len + beamLen * 2}`,
+          } as React.CSSProperties;
+          return (
+            <g key={`beam-${i}`} className="beam-fade" style={groupStyle}>
+              <path className="beam-move" d={d} fill="none" stroke={b.color} strokeWidth="7" strokeLinecap="round" opacity={0.35} />
+              <path className="beam-move" d={d} fill="none" stroke={b.color} strokeWidth="2.5" strokeLinecap="round" />
+            </g>
+          );
+        })}
+
+      {/* Reduced motion: keep the diagram legible with static colored rails */}
+      {reduce &&
+        paths.map((d, i) =>
+          d ? (
+            <path key={`static-${i}`} d={d} fill="none" stroke={beams[i].color} strokeWidth="1.6" opacity="0.5" />
+          ) : null,
+        )}
     </svg>
   );
 }
