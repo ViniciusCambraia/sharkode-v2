@@ -12,7 +12,7 @@ import { wa } from '../lib/contact';
  * n8n estiver fora — o formulário abre o WhatsApp com a mensagem preenchida:
  * o lead NUNCA se perde.
  */
-const N8N_WEBHOOK_URL = '';
+const N8N_WEBHOOK_URL = 'https://n8n.sharkode.com.br/webhook/sharkode-contato';
 
 interface ContactValues extends Record<string, string> {
   name: string;
