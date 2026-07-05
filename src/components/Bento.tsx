@@ -59,7 +59,7 @@ export default function Bento() {
       scrollTrigger: {
         trigger: el,
         start: 'top 80%',
-        toggleActions: 'play none none reverse',
+        toggleActions: 'play none none none', // anima 1x e fica — reverse no scroll-up deixa a página "nervosa"
       },
     });
 

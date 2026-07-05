@@ -394,21 +394,24 @@ a:focus-visible {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* BlurSection: DOMINAR ⇄ ESCALAR crossfade loop (one 9s cycle) */
-.blur-cycle-a { animation: blurCycleA 9s ease-in-out infinite; }
-.blur-cycle-b { animation: blurCycleB 9s ease-in-out infinite; }
-.ring-pulse { animation: ringPulse 9s ease-in-out infinite; }
+/* BlurSection: DOMINAR ⇄ ESCALAR crossfade loop.
+   Ciclo de 7s com entrada RÁPIDA (nítido em ~0.6s): a animação só começa
+   quando a seção entra em vista (classe aplicada via IntersectionObserver),
+   então o usuário sempre vê DOMINAR formado — e quem ficar vê a troca. */
+.blur-cycle-a { animation: blurCycleA 7s ease-in-out infinite; }
+.blur-cycle-b { animation: blurCycleB 7s ease-in-out infinite; }
+.ring-pulse { animation: ringPulse 7s ease-in-out infinite; }
 @keyframes blurCycleA {
-  0% { opacity: 0; filter: blur(22px); transform: scale(0.72) rotate(-6deg); }
-  14% { opacity: 1; filter: blur(0px); transform: scale(1) rotate(0deg); }
-  38% { opacity: 1; filter: blur(0px); transform: scale(1) rotate(0deg); }
-  50%, 100% { opacity: 0; filter: blur(14px); transform: scale(1.7) rotate(0deg); }
+  0% { opacity: 0; filter: blur(18px); transform: scale(0.8) rotate(-5deg); }
+  9% { opacity: 1; filter: blur(0px); transform: scale(1) rotate(0deg); }
+  40% { opacity: 1; filter: blur(0px); transform: scale(1) rotate(0deg); }
+  50%, 100% { opacity: 0; filter: blur(14px); transform: scale(1.6) rotate(0deg); }
 }
 @keyframes blurCycleB {
-  0%, 46% { opacity: 0; filter: blur(18px); transform: scale(0.85); }
-  60% { opacity: 1; filter: blur(0px); transform: scale(1); }
-  86% { opacity: 1; filter: blur(0px); transform: scale(1); }
-  100% { opacity: 0; filter: blur(12px); transform: scale(1.35); }
+  0%, 48% { opacity: 0; filter: blur(16px); transform: scale(0.85); }
+  58% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  92% { opacity: 1; filter: blur(0px); transform: scale(1); }
+  100% { opacity: 0; filter: blur(10px); transform: scale(1.2); }
 }
 @keyframes ringPulse {
   0%, 100% { transform: translate(-50%, -50%) scale(1); }

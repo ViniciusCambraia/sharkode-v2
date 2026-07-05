@@ -112,6 +112,17 @@ export default function OceanDepth() {
       mouse.ny = e.clientY / h;
     };
     const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
+    // Touch: o DEDO é o predador. Rolar a página arrasta pânico pelo cardume;
+    // um tap ainda dispara o "bote" (o navegador sintetiza mousedown no tap).
+    const onTouch = (e: TouchEvent) => {
+      const t = e.touches[0];
+      if (!t) return;
+      mouse.x = t.clientX;
+      mouse.y = t.clientY;
+      mouse.nx = t.clientX / w;
+      mouse.ny = t.clientY / h;
+    };
+    const onTouchEnd = () => { mouse.x = -9999; mouse.y = -9999; };
     // Click = bite: shockwave impulse through the school
     const onDown = (e: MouseEvent) => {
       for (const f of fish) {
@@ -127,6 +138,9 @@ export default function OceanDepth() {
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mousedown', onDown);
     document.documentElement.addEventListener('mouseleave', onLeave);
+    window.addEventListener('touchstart', onTouch, { passive: true });
+    window.addEventListener('touchmove', onTouch, { passive: true });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
 
     let raf = 0;
     let running = true;
@@ -244,6 +258,9 @@ export default function OceanDepth() {
       window.removeEventListener('mousemove', onMove);
       window.removeEventListener('mousedown', onDown);
       document.documentElement.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('touchstart', onTouch);
+      window.removeEventListener('touchmove', onTouch);
+      window.removeEventListener('touchend', onTouchEnd);
       document.removeEventListener('visibilitychange', onVis);
     };
   }, []);

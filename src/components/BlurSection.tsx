@@ -1,4 +1,4 @@
-﻿import { useRef, useState } from 'react';
+﻿import { useEffect, useRef, useState } from 'react';
 import { useStickyScroll } from '../hooks/useStickyScroll';
 
 function cl(v: number) { return Math.max(0, Math.min(1, v)); }
@@ -68,16 +68,40 @@ export default function BlurSection() {
   const [mobile] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse), (max-width: 767px)').matches,
   );
+  const [reduce] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  );
+  // A sequência só começa quando a seção entra em vista — senão o loop roda
+  // desde o load e o usuário chega no meio de uma transição borrada.
+  const mobRef = useRef<HTMLElement>(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    if (!mobile) return;
+    const el = mobRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setSeen(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [mobile]);
 
   if (mobile) {
+    const play = seen && !reduce;
     return (
-      <section className="relative flex h-[92svh] items-center justify-center overflow-hidden">
+      <section ref={mobRef} className="relative flex h-[92svh] items-center justify-center overflow-hidden">
         {/* Anéis — pulso lento */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           {[220, 360, 520].map((r) => (
             <div
               key={r}
-              className="ring-pulse absolute rounded-full border"
+              className={`absolute rounded-full border ${play ? 'ring-pulse' : ''}`}
               style={{
                 width: r,
                 height: r,
@@ -89,12 +113,16 @@ export default function BlurSection() {
           ))}
         </div>
 
-        <div className="blur-cycle-a absolute select-none pointer-events-none" style={{ ...WORD_STYLE, color: '#fff' }}>
+        <div
+          className={`absolute select-none pointer-events-none ${play ? 'blur-cycle-a' : ''}`}
+          style={{ ...WORD_STYLE, color: '#fff', opacity: reduce ? 1 : 0 }}
+        >
           DOMINAR
         </div>
         <div
-          className="blur-cycle-b absolute select-none pointer-events-none"
+          className={`absolute select-none pointer-events-none ${play ? 'blur-cycle-b' : ''}`}
           style={{
+            opacity: 0,
             ...WORD_STYLE,
             background: 'linear-gradient(135deg,#1a80f8 0%,#3f19f7 100%)',
             WebkitBackgroundClip: 'text',
