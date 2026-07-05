@@ -71,7 +71,10 @@ export default function Bento() {
   }, []);
 
   return (
-    <section className="py-24 md:py-32">
+    // overflow-x-clip: os cards esperam o reveal com translateX(±55) — sem o
+    // clip, esse offset invisível ALARGA o layout do celular (Nav estica,
+    // página balança). A seção contém os próprios transforms.
+    <section className="overflow-x-clip py-24 md:py-32">
       <div className="max-w-[var(--w)] mx-auto px-5">
         {/* Header */}
         <div ref={headRef} className="mb-16">

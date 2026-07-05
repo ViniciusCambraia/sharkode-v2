@@ -39,7 +39,9 @@ body {
   font-family: 'Inter', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* NUNCA colocar overflow-x aqui: com o html já controlando o overflow do
+     viewport, um overflow no body faz o body virar scroll container e MATA
+     todo position: sticky da página (os pins do desktop renderizam vazio). */
 }
 
 /* ----- Holographic badge (/contato mobile) ----- */
