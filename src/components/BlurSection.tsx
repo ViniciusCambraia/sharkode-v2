@@ -1,4 +1,4 @@
-﻿import { useRef } from 'react';
+﻿import { useRef, useState } from 'react';
 import { useStickyScroll } from '../hooks/useStickyScroll';
 
 function cl(v: number) { return Math.max(0, Math.min(1, v)); }
@@ -48,9 +48,65 @@ const floatCards = [
   },
 ];
 
+const WORD_STYLE: React.CSSProperties = {
+  fontFamily: 'Syncopate, sans-serif',
+  fontWeight: 700,
+  fontSize: 'clamp(52px,13vw,190px)',
+  textTransform: 'uppercase',
+  letterSpacing: '.04em',
+  whiteSpace: 'nowrap',
+  zIndex: 2,
+  willChange: 'transform, opacity, filter',
+};
+
 export default function BlurSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const { progress: p } = useStickyScroll(sectionRef as React.RefObject<HTMLElement | null>);
+  // 480vh of scroll-scrubbed runway reads as EMPTY pages on a phone. Touch
+  // gets one viewport where DOMINAR ⇄ ESCALAR crossfade on their own
+  // (CSS loop, no scroll dependency).
+  const [mobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse), (max-width: 767px)').matches,
+  );
+
+  if (mobile) {
+    return (
+      <section className="relative flex h-[92svh] items-center justify-center overflow-hidden">
+        {/* Anéis — pulso lento */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          {[220, 360, 520].map((r) => (
+            <div
+              key={r}
+              className="ring-pulse absolute rounded-full border"
+              style={{
+                width: r,
+                height: r,
+                borderColor: 'rgba(26,128,248,0.12)',
+                top: '50%',
+                left: '50%',
+              }}
+            />
+          ))}
+        </div>
+
+        <div className="blur-cycle-a absolute select-none pointer-events-none" style={{ ...WORD_STYLE, color: '#fff' }}>
+          DOMINAR
+        </div>
+        <div
+          className="blur-cycle-b absolute select-none pointer-events-none"
+          style={{
+            ...WORD_STYLE,
+            background: 'linear-gradient(135deg,#1a80f8 0%,#3f19f7 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+          }}
+        >
+          ESCALAR
+        </div>
+      </section>
+    );
+  }
 
   // ── DOMINAR — entra com rotação -8°→0°, sai escalando para frente ──
   const dEnter = cl(p / 0.40);
@@ -83,7 +139,7 @@ export default function BlurSection() {
       ref={sectionRef}
       style={{ height: '480vh', position: 'relative' }}
     >
-      <div className="sticky top-0 h-screen flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-[100svh] flex items-center justify-center overflow-hidden">
 
         {/* Anéis de fundo — crescem com scroll */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -156,7 +212,9 @@ export default function BlurSection() {
           return (
             <div
               key={id}
-              className="absolute rounded-[18px] p-5"
+              // hidden md:block — nos cantos de um phone os 4 cards colidem e
+              // truncam; no mobile a palavra cinematográfica fica sozinha.
+              className="absolute hidden rounded-[18px] p-5 md:block"
               style={{
                 ...pos,
                 background: 'rgba(12,14,22,.88)',

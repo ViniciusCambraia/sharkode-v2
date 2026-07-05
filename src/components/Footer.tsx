@@ -1,4 +1,5 @@
 import { ChevronRight, Mail, MessageCircle } from 'lucide-react';
+import { wa } from '../lib/contact';
 
 const columns = [
   {
@@ -45,9 +46,8 @@ export default function Footer() {
       {/* Giant watermark — like "APEX" in the reference */}
       <div className="w-full flex items-center justify-center pt-10 pb-2 pointer-events-none select-none">
         <span
-          className="font-syncopate font-bold uppercase whitespace-nowrap"
+          className="font-syncopate font-bold uppercase whitespace-nowrap text-[length:clamp(36px,10.5vw,220px)] md:text-[length:clamp(72px,14vw,220px)]"
           style={{
-            fontSize: 'clamp(72px, 14vw, 220px)',
             letterSpacing: '-0.025em',
             color: 'rgba(255,255,255,.04)',
             lineHeight: 1,
@@ -132,7 +132,7 @@ export default function Footer() {
         <p className="type-body">© 2026 SHARKODE. Todos os direitos reservados.</p>
         <div className="flex items-center gap-2.5">
           <a
-            href="https://wa.me/5511999999999"
+            href={wa()}
             target="_blank"
             rel="noreferrer"
             className="hover:text-emerald-400 transition-colors"

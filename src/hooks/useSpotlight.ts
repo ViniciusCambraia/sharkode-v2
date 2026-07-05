@@ -19,6 +19,10 @@ export function useSpotlight<T extends HTMLElement = HTMLElement>(
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
+    // Touch: no hover = no spotlight; taps would just flash the glow oddly.
+    if (window.matchMedia('(hover: none)').matches) {
+      return;
+    }
 
     const onMove = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();

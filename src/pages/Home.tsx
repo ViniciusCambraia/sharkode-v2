@@ -14,6 +14,7 @@ import Integrations from '../components/Integrations';
 import WhyTrust from '../components/WhyTrust';
 import Testimonials from '../components/Testimonials';
 import FAQ from '../components/FAQ';
+import Contact from '../components/Contact';
 import CTABanner from '../components/CTABanner';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
@@ -57,6 +58,7 @@ export default function Home() {
         <div className="cv-auto">
           <FAQ />
         </div>
+        <Contact />
         <CTABanner />
       </main>
       <Footer />

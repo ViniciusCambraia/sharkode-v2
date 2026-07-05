@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+// Dev-only self-signed HTTPS — iOS/Android only expose the gyroscope
+// (DeviceOrientation) on secure origins, needed to test /contato on a phone.
+import basicSsl from '@vitejs/plugin-basic-ssl';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), basicSsl()],
   build: {
     target: 'es2022',
     rollupOptions: {

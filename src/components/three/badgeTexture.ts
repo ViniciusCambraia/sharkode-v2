@@ -2,6 +2,37 @@ import * as THREE from 'three';
 
 const SITE = 'SHARKODE.COM.BR';
 
+/* Texture geometry shared by the drawing code and the tap hit-testing.
+ * The GLB front face samples U∈[0,FRONT_U] × V∈[0,FRONT_V] of a 1025px
+ * square; we paint an undistorted 716×1000 logical card into that region. */
+const SIZE = 1025;
+const FRONT_U = 0.4989;
+const FRONT_V = 0.7548;
+const LOGICAL_W = 716;
+const LOGICAL_H = 1000;
+const SX = (SIZE * FRONT_U) / LOGICAL_W;
+const SY = (SIZE * FRONT_V) / LOGICAL_H;
+
+/* Printed buttons (logical card coords) — the card IS the interface */
+const BTN_WA = { x: 58, y: 700, w: 600, h: 96 };
+const BTN_SAVE = { x: 58, y: 816, w: 600, h: 88 };
+
+/**
+ * Maps a tap's mesh UV to a printed button. Slop-expanded for thumbs on a
+ * swinging card. Returns null outside the buttons (including the card back).
+ */
+export function badgeHitZone(u: number, v: number): 'whatsapp' | 'save' | null {
+  if (u < 0 || u > FRONT_U || v < 0 || v > FRONT_V) return null;
+  const lx = (u * SIZE) / SX;
+  const ly = (v * SIZE) / SY;
+  const SLOP = 16;
+  const hit = (b: { x: number; y: number; w: number; h: number }) =>
+    lx >= b.x - SLOP && lx <= b.x + b.w + SLOP && ly >= b.y - SLOP && ly <= b.y + b.h + SLOP;
+  if (hit(BTN_WA)) return 'whatsapp';
+  if (hit(BTN_SAVE)) return 'save';
+  return null;
+}
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -17,19 +48,9 @@ function loadImage(src: string): Promise<HTMLImageElement> {
  * flips `needsUpdate` when ready, so the card never blocks first paint.
  */
 export function createBadgeTexture(): THREE.CanvasTexture {
-  // The GLB card samples a SQUARE 1025px texture. The FRONT face only uses the
-  // top-left quadrant — U∈[0, 0.5] × V∈[0, 0.755] (the right half is the card
-  // back). We draw an undistorted portrait card (aspect 0.716) in logical space
-  // and scale it into that quadrant so the art lands on the front, undistorted.
-  const SIZE = 1025;
-  const FRONT_U = 0.4989;
-  const FRONT_V = 0.7548;
-  const regionW = SIZE * FRONT_U; // ~511
-  const regionH = SIZE * FRONT_V; // ~774
-  const logicalH = 1000;
-  const logicalW = Math.round(logicalH * 0.716); // 716 (card aspect)
-  const sx = regionW / logicalW; // ~0.714
-  const sy = regionH / logicalH; // ~0.774
+  // Geometry constants live at module scope (shared with badgeHitZone).
+  const sx = SX;
+  const sy = SY;
 
   const canvas = document.createElement('canvas');
   canvas.width = SIZE;
@@ -54,8 +75,8 @@ export function createBadgeTexture(): THREE.CanvasTexture {
     ctx.save();
     ctx.scale(sx, sy); // fit the logical card into the front quadrant
 
-    const W = logicalW;
-    const H = logicalH;
+    const W = LOGICAL_W;
+    const H = LOGICAL_H;
 
     // Glossy black base
     const bg = ctx.createLinearGradient(0, 0, W, H);
@@ -106,38 +127,70 @@ export function createBadgeTexture(): THREE.CanvasTexture {
     ctx.font = font(600, 30);
     ctx.fillText('2025®', W - pad, 104);
 
-    // Headline — both lines share the size that makes the wider one fit
+    // Headline — both lines share the size that makes the wider one fit.
+    // Sits higher than the v1 design to make room for the printed buttons.
     ctx.textAlign = 'left';
     const headPx = Math.min(
       fit('ENTRE EM', 700, 120, avail),
       fit('CONTATO', 700, 120, avail),
     );
     const lineH = headPx * 0.94;
-    const contatoY = 855;
+    const contatoY = 620;
     ctx.font = font(700, headPx);
     ctx.fillStyle = '#ffffff';
     ctx.fillText('ENTRE EM', pad - 2, contatoY - lineH);
     ctx.fillText('CONTATO', pad - 2, contatoY);
 
-    // Blue subtitle
-    const subPx = fit('Conheça o nosso trabalho', 600, 33, avail);
-    ctx.font = font(600, subPx);
-    ctx.fillStyle = '#1a80f8';
-    ctx.fillText('Conheça o nosso trabalho', pad, contatoY + 56);
+    // Printed buttons — the card is the interface (tap zones in badgeHitZone)
+    const pill = (
+      b: { x: number; y: number; w: number; h: number },
+      opts: { fill?: CanvasGradient | string; stroke?: string; label: string; px: number; color: string },
+    ) => {
+      ctx.beginPath();
+      ctx.roundRect(b.x, b.y, b.w, b.h, b.h / 2);
+      if (opts.fill) {
+        ctx.fillStyle = opts.fill;
+        ctx.fill();
+      }
+      if (opts.stroke) {
+        ctx.strokeStyle = opts.stroke;
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+      ctx.font = font(700, fit(opts.label, 700, opts.px, b.w - 70));
+      ctx.fillStyle = opts.color;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(opts.label, b.x + b.w / 2, b.y + b.h / 2 + 2);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+    };
+
+    const waGrad = ctx.createLinearGradient(BTN_WA.x, 0, BTN_WA.x + BTN_WA.w, 0);
+    waGrad.addColorStop(0, '#1a80f8');
+    waGrad.addColorStop(1, '#3f19f7');
+    pill(BTN_WA, { fill: waGrad, label: 'FALAR NO WHATSAPP →', px: 34, color: '#ffffff' });
+    pill(BTN_SAVE, {
+      fill: 'rgba(255,255,255,0.05)',
+      stroke: 'rgba(255,255,255,0.3)',
+      label: 'SALVAR CONTATO',
+      px: 30,
+      color: 'rgba(255,255,255,0.92)',
+    });
 
     // Footer domain (letter-spaced), auto-fit including tracking
     const tracking = 4;
-    ctx.font = font(600, 28);
+    ctx.font = font(600, 26);
     const rawW = [...SITE].reduce((s, ch) => s + ctx.measureText(ch).width + tracking, 0);
-    const domPx = rawW > avail ? (28 * avail) / rawW : 28;
+    const domPx = rawW > avail ? (26 * avail) / rawW : 26;
     ctx.font = font(600, domPx);
-    ctx.fillStyle = 'rgba(255,255,255,0.9)';
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.save();
-    ctx.translate(pad, contatoY + 122);
+    ctx.translate(pad, 962);
     let x = 0;
     for (const ch of SITE) {
       ctx.fillText(ch, x, 0);
-      x += ctx.measureText(ch).width + tracking * (domPx / 28);
+      x += ctx.measureText(ch).width + tracking * (domPx / 26);
     }
     ctx.restore();
 
@@ -194,19 +247,14 @@ export function createStrapTexture(): THREE.CanvasTexture {
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Single wordmark + separator, filling the tile
+  // Single wordmark filling the tile. (No tiny separator glyph: a ~12px
+  // bright detail renders at 2-3 screen px on the strap and shimmers/flickers
+  // from aliasing whenever the physics micro-moves the band — pure noise.)
   ctx.fillStyle = 'rgba(255,255,255,0.94)';
   ctx.font = '700 62px "Space Grotesk", system-ui, sans-serif';
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText('sharkode', 22, H / 2 + 2);
-
-  ctx.save();
-  ctx.translate(W - 40, H / 2);
-  ctx.rotate(Math.PI / 4);
-  ctx.fillStyle = 'rgba(26,128,248,0.95)';
-  ctx.fillRect(-6, -6, 12, 12);
-  ctx.restore();
 
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;

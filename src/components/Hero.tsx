@@ -1,5 +1,5 @@
 import { ArrowUpRight, ArrowRight } from 'lucide-react';
-import HologramBackground from './HologramBackground';
+import { useMagnetic } from '../hooks/useMagnetic';
 
 /* ── Circular scroll indicator ── */
 const SPIN_STYLE = `@keyframes spin-slow { to { transform: rotate(360deg); } }`;
@@ -39,14 +39,16 @@ function ScrollIndicator() {
 }
 
 export default function Hero() {
+  const magPrimary = useMagnetic<HTMLSpanElement>(0.4);
+  const magGhost = useMagnetic<HTMLSpanElement>(0.4);
+
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+      className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden"
       style={{ paddingTop: '120px', paddingBottom: '100px' }}
     >
-      {/* Animated gradient background */}
-      <HologramBackground />
+      {/* Background is the site-wide OceanDepth canvas (mounted in Layout) */}
 
       {/* Content — left-aligned */}
       <div
@@ -96,22 +98,26 @@ export default function Hero() {
           </p>
 
           <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 rounded-full py-3.5 px-7 font-grotesk text-[14px] font-semibold transition-all duration-300 hover:scale-[1.03] hover:shadow-[0_0_28px_rgba(26,128,248,.5)]"
-              style={{ background: 'var(--blue)', color: '#fff' }}
-            >
-              Iniciar Projeto
-              <ArrowUpRight className="w-4 h-4" />
-            </a>
-            <a
-              href="#portfolio"
-              className="group inline-flex items-center gap-2 rounded-full py-3.5 px-7 font-grotesk text-[14px] font-semibold border transition-all duration-300 hover:bg-white/5"
-              style={{ borderColor: 'rgba(255,255,255,.15)', color: 'rgba(255,255,255,.7)' }}
-            >
-              Ver Trabalhos
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-            </a>
+            <span ref={magPrimary} className="inline-block">
+              <a
+                href="#contact"
+                className="inline-flex items-center gap-2 rounded-full py-3.5 px-7 font-grotesk text-[14px] font-semibold transition-[background,box-shadow] duration-300 hover:shadow-[0_0_28px_rgba(26,128,248,.5)]"
+                style={{ background: 'var(--blue)', color: '#fff' }}
+              >
+                Iniciar Projeto
+                <ArrowUpRight className="w-4 h-4" />
+              </a>
+            </span>
+            <span ref={magGhost} className="inline-block">
+              <a
+                href="#portfolio"
+                className="group inline-flex items-center gap-2 rounded-full py-3.5 px-7 font-grotesk text-[14px] font-semibold border transition-colors duration-300 hover:bg-white/5"
+                style={{ borderColor: 'rgba(255,255,255,.15)', color: 'rgba(255,255,255,.7)' }}
+              >
+                Ver Trabalhos
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+            </span>
           </div>
         </div>
       </div>

@@ -4,6 +4,15 @@ import { useGsapReveal } from '../hooks/useGsapReveal';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useToast } from '../hooks/useToast';
+import { wa } from '../lib/contact';
+
+/**
+ * Destino real do formulário: webhook de PRODUÇÃO do n8n (nó Webhook, método
+ * POST, CORS liberado pro domínio do site). Enquanto estiver vazio — ou se o
+ * n8n estiver fora — o formulário abre o WhatsApp com a mensagem preenchida:
+ * o lead NUNCA se perde.
+ */
+const N8N_WEBHOOK_URL = '';
 
 interface ContactValues extends Record<string, string> {
   name: string;
@@ -28,19 +37,53 @@ export default function Contact() {
   const formRef = useRef<HTMLFormElement | null>(null);
   useGsapFadeUp<HTMLFormElement>(formRef);
 
-  const onSubmit = (vals: ContactValues) => {
+  const onSubmit = async (vals: ContactValues) => {
     // Honeypot — silently drop bot submissions
     if (vals.website) return;
 
+    // Fallback à prova de falha: o lead vira mensagem de WhatsApp preenchida
+    const waFallback = () => {
+      window.open(
+        wa(`Olá! Vim pelo site.\nNome: ${vals.name}\nContato: ${vals.contact}\n\n${vals.message}`),
+        '_blank',
+        'noopener',
+      );
+      reset();
+    };
+
+    if (!N8N_WEBHOOK_URL) {
+      waFallback();
+      return;
+    }
+
     toast('SYS_SENDING', 'Enviando sua mensagem...', 'info');
-    window.setTimeout(() => {
+    try {
+      const ctrl = new AbortController();
+      const timer = window.setTimeout(() => ctrl.abort(), 10000);
+      const res = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: vals.name,
+          contact: vals.contact,
+          message: vals.message,
+          source: 'sharkode.com.br — formulário do site',
+          sentAt: new Date().toISOString(),
+        }),
+        signal: ctrl.signal,
+      });
+      window.clearTimeout(timer);
+      if (!res.ok) throw new Error(String(res.status));
       toast(
         'SUCCESS',
         `Olá ${vals.name}, recebemos seu contato! Responderemos em breve.`,
         'success'
       );
       reset();
-    }, 1500);
+    } catch {
+      toast('SEM CONEXÃO', 'Não conseguimos enviar agora — te levamos pro WhatsApp.', 'warning');
+      waFallback();
+    }
   };
 
   return (
@@ -62,7 +105,7 @@ export default function Contact() {
             Respondemos em até 1 dia útil com um diagnóstico inicial gratuito.
           </p>
           <a
-            href="https://wa.me/5511999999999"
+            href={wa('Olá! Vim pelo site da Sharkode e quero um diagnóstico.')}
             target="_blank"
             rel="noreferrer"
             className="type-cta inline-flex items-center gap-2 rounded-full py-3.5 px-6 bg-emerald-600 text-white hover:bg-emerald-500 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]"

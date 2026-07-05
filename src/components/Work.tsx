@@ -1,4 +1,4 @@
-﻿import { useLayoutEffect, useRef } from 'react';
+﻿import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
@@ -62,6 +62,41 @@ function ProjectPhoto({ src, accent }: { src: string; accent: string }) {
   );
 }
 
+/* ── Card inner content (photo + info overlay) — shared by fan and carousel ── */
+function CaseContent({ accent, tag, title, badge, image }: (typeof cases)[number]) {
+  return (
+    <>
+      <ProjectPhoto src={image} accent={accent} />
+      <div
+        className="absolute inset-x-0 bottom-0 px-6 py-5"
+        style={{ background: 'linear-gradient(to top, rgba(0,0,0,.85) 60%, transparent)' }}
+      >
+        <p
+          className="font-grotesk text-[10px] font-semibold tracking-[.14em] mb-2"
+          style={{ color: accent }}
+        >
+          {tag}
+        </p>
+        <p className="font-grotesk font-bold text-white text-[20px] mb-3 leading-tight">
+          {title}
+        </p>
+        <span
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold"
+          style={{
+            background: 'rgba(255,255,255,.1)',
+            color: 'rgba(255,255,255,.85)',
+            backdropFilter: 'blur(8px)',
+            border: '1px solid rgba(255,255,255,.12)',
+          }}
+        >
+          <span style={{ color: accent }}>{badge.icon}</span>
+          {badge.text}
+        </span>
+      </div>
+    </>
+  );
+}
+
 /* ── Fan card container ── */
 const CARD_W = 440;
 const CARD_H = 540;
@@ -69,12 +104,19 @@ const FAN_STEP = 240; // px between card left edges
 
 function WorkFan() {
   const containerRef = useRef<HTMLDivElement>(null);
+  // The 920px desktop fan can't fit a phone (cards clipped, one fully
+  // off-screen). Touch gets the native pattern instead: a snap carousel —
+  // one card per swipe, next card peeking.
+  const [mobile] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse), (max-width: 767px)').matches,
+  );
 
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const cards = container.querySelectorAll<HTMLElement>('.work-fan-card');
+    if (!cards.length) return; // mobile carousel — no fan to animate
 
     // Initial: all cards stacked (centered), invisible
     gsap.set(cards, {
@@ -103,6 +145,31 @@ function WorkFan() {
       gsap.set(cards, { clearProps: 'opacity,visibility,transform,x,y,scale' });
     };
   }, []);
+
+  if (mobile) {
+    return (
+      <div
+        className="no-scrollbar -mx-5 flex snap-x snap-mandatory gap-4 overflow-x-auto px-5 pb-2"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
+        {cases.map((c) => (
+          <div
+            key={c.title}
+            className="relative shrink-0 snap-center overflow-hidden rounded-[24px]"
+            style={{
+              width: 'min(78vw, 320px)',
+              height: 460,
+              background: c.bg,
+              border: `1px solid ${c.accent}22`,
+              boxShadow: `0 18px 44px rgba(0,0,0,.45), 0 0 0 0.5px ${c.accent}15`,
+            }}
+          >
+            <CaseContent {...c} />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div
@@ -138,37 +205,7 @@ function WorkFan() {
             (e.currentTarget as HTMLElement).style.boxShadow = `0 24px 60px rgba(0,0,0,.5), 0 0 0 0.5px ${accent}15`;
           }}
         >
-          {/* Project photo */}
-          <ProjectPhoto src={image} accent={accent} />
-
-          {/* Bottom info overlay */}
-          <div
-            className="absolute inset-x-0 bottom-0 px-6 py-5"
-            style={{ background: 'linear-gradient(to top, rgba(0,0,0,.85) 60%, transparent)' }}
-          >
-            <p
-              className="font-grotesk text-[10px] font-semibold tracking-[.14em] mb-2"
-              style={{ color: accent }}
-            >
-              {tag}
-            </p>
-            <p className="font-grotesk font-bold text-white text-[20px] mb-3 leading-tight">
-              {title}
-            </p>
-            {/* Metric badge */}
-            <span
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-semibold"
-              style={{
-                background: 'rgba(255,255,255,.1)',
-                color: 'rgba(255,255,255,.85)',
-                backdropFilter: 'blur(8px)',
-                border: '1px solid rgba(255,255,255,.12)',
-              }}
-            >
-              <span style={{ color: accent }}>{badge.icon}</span>
-              {badge.text}
-            </span>
-          </div>
+          <CaseContent accent={accent} tag={tag} title={title} badge={badge} bg={bg} image={image} />
         </div>
       ))}
     </div>

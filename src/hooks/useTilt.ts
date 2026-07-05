@@ -18,6 +18,10 @@ export function useTilt<T extends HTMLElement = HTMLElement>(
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
+    // Touch: taps emulate mousemove and leave cards stuck mid-tilt — skip.
+    if (window.matchMedia('(hover: none)').matches) {
+      return;
+    }
 
     const onMove = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();
