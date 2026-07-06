@@ -57,35 +57,98 @@ function drawShark(c: CanvasRenderingContext2D) {
   c.globalCompositeOperation = 'source-over';
 }
 
-function sampleShark(count: number): Array<{ x: number; y: number }> {
+interface SharkShape {
+  pts: Array<{ x: number; y: number }>;
+  bw: number; // caixa da forma
+  bh: number;
+}
+
+/* ~240 pontos não LEEM uma forma preenchida — mas leem perfeitamente um
+   CONTORNO (liga-pontos). Amostra a BORDA + ~15% de miolo. */
+function samplePoints(data: Uint8ClampedArray, W: number, H: number, count: number,
+  x0 = 0, y0 = 0, x1 = W, y1 = H, alphaMin = 128): SharkShape {
+  const on = (x: number, y: number) =>
+    x >= x0 && x < x1 && y >= y0 && y < y1 && data[(y * W + x) * 4 + 3] > alphaMin;
+  const edge: Array<{ x: number; y: number }> = [];
+  const fill: Array<{ x: number; y: number }> = [];
+  const step = Math.max(1, Math.round((x1 - x0) / 260));
+  for (let y = y0; y < y1; y += step) {
+    for (let x = x0; x < x1; x += step) {
+      if (!on(x, y)) continue;
+      if (!on(x - step, y) || !on(x + step, y) || !on(x, y - step) || !on(x, y + step)) {
+        edge.push({ x: x - x0, y: y - y0 });
+      } else {
+        fill.push({ x: x - x0, y: y - y0 });
+      }
+    }
+  }
+  const pts: Array<{ x: number; y: number }> = [];
+  const nEdge = Math.min(edge.length, Math.round(count * 0.85));
+  const stride = 7919; // primo → espalha sem padrão de varredura
+  for (let i = 0; i < nEdge && edge.length; i++) pts.push(edge[(i * stride) % edge.length]);
+  for (let i = pts.length; i < count && (fill.length || edge.length); i++) {
+    pts.push(fill.length ? fill[(i * stride) % fill.length] : edge[i % edge.length]);
+  }
+  return { pts, bw: x1 - x0, bh: y1 - y0 };
+}
+
+/* Fallback (offline/decode falhou): silhueta por primitivas. */
+function sampleShark(count: number): SharkShape {
   const W = 520, H = 260;
   const off = document.createElement('canvas');
   off.width = W; off.height = H;
   const c = off.getContext('2d')!;
   drawShark(c);
-  const data = c.getImageData(0, 0, W, H).data;
-  const on = (x: number, y: number) =>
-    x >= 0 && x < W && y >= 0 && y < H && data[(y * W + x) * 4 + 3] > 128;
-  // ~240 pontos não LEEM uma forma preenchida — mas leem perfeitamente um
-  // CONTORNO (liga-pontos). Amostra a BORDA da silhueta + uns 15% de miolo.
-  const edge: Array<{ x: number; y: number }> = [];
-  const fill: Array<{ x: number; y: number }> = [];
-  for (let y = 0; y < H; y += 2) {
-    for (let x = 0; x < W; x += 2) {
-      if (!on(x, y)) continue;
-      if (!on(x - 2, y) || !on(x + 2, y) || !on(x, y - 2) || !on(x, y + 2)) {
-        edge.push({ x, y });
-      } else {
-        fill.push({ x, y });
+  return samplePoints(c.getImageData(0, 0, W, H).data, W, H, count);
+}
+
+/* A FORMA REAL: o tubarão da logo. O arquivo é o wordmark completo
+   (tubarão + "sharkode") — recorta só o tubarão achando o vão de colunas
+   transparentes entre ele e o texto. */
+async function sampleLogoShark(count: number): Promise<SharkShape | null> {
+  try {
+    const img = new Image();
+    img.src = '/SALVA_AI_GARAIO.webp';
+    await img.decode();
+    const W = img.naturalWidth, H = img.naturalHeight;
+    if (!W || !H) return null;
+    const off = document.createElement('canvas');
+    off.width = W; off.height = H;
+    const c = off.getContext('2d')!;
+    c.drawImage(img, 0, 0);
+    const data = c.getImageData(0, 0, W, H).data;
+
+    // A logo tem GLOW embutido (alpha ~128) preenchendo o vão tubarão↔texto —
+    // limiar alto (200) + tolerância de 1px/coluna pra achar o vão real.
+    const ALPHA = 200;
+    const colInk: boolean[] = Array(W).fill(false);
+    for (let x = 0; x < W; x++) {
+      let n = 0;
+      for (let y = 0; y < H; y++) {
+        if (data[(y * W + x) * 4 + 3] > ALPHA && ++n > 1) { colInk[x] = true; break; }
       }
     }
+    const first = colInk.indexOf(true);
+    if (first < 0) return null;
+    // fim do tubarão = primeiro vão de colunas vazias depois dele
+    const GAP = Math.max(3, Math.round(W * 0.012));
+    let x1 = W;
+    for (let x = first + 5, blank = 0; x < W; x++) {
+      blank = colInk[x] ? 0 : blank + 1;
+      if (blank >= GAP) { x1 = x - GAP + 1; break; }
+    }
+    // bbox vertical dentro do recorte
+    let y0 = H, y1 = 0;
+    for (let y = 0; y < H; y++) {
+      for (let x = first; x < x1; x += 2) {
+        if (data[(y * W + x) * 4 + 3] > ALPHA) { y0 = Math.min(y0, y); y1 = Math.max(y1, y); break; }
+      }
+    }
+    if (y1 <= y0) return null;
+    return samplePoints(data, W, H, count, first, y0, x1, y1 + 1, ALPHA);
+  } catch {
+    return null;
   }
-  const out: Array<{ x: number; y: number }> = [];
-  const nEdge = Math.min(edge.length, Math.round(count * 0.85));
-  const stride = 7919; // primo → espalha sem padrão de varredura
-  for (let i = 0; i < nEdge; i++) out.push(edge[(i * stride) % edge.length]);
-  for (let i = out.length; i < count; i++) out.push(fill[(i * stride) % fill.length] ?? edge[i % edge.length]);
-  return out;
 }
 
 export default function OceanDepth() {
@@ -184,14 +247,17 @@ export default function OceanDepth() {
     let modeMs = 0;         // TEMPO no modo atual (ms) — beats narrativos são
                             // em tempo real, não frames (120Hz ≠ 2× mais rápido)
     let converged = false;  // já rodou nesta visita?
-    const shark = sampleShark(COUNT);
-    // âncora e escala do tubarão (atrás/à direita do headline, atacando p/ esquerda)
+    // A forma-alvo é o TUBARÃO DA LOGO (recortado do wordmark); primitivas
+    // ficam como fallback até a imagem decodificar / se ela falhar.
+    let shark: SharkShape = sampleShark(COUNT);
+    sampleLogoShark(COUNT).then((s) => { if (s && s.pts.length) shark = s; });
+    // âncora e escala (atrás/à direita do headline, boca apontando p/ ele)
     const layoutShark = () => {
-      const scale = Math.min((coarse ? w * 0.82 : w * 0.4) / 520, (h * 0.42) / 260);
-      const ox = coarse ? w * 0.5 - 260 * scale : w * 0.575;
-      const oy = coarse ? h * 0.30 : h * 0.34;
+      const scale = Math.min((coarse ? w * 0.7 : w * 0.29) / shark.bw, (h * 0.42) / shark.bh);
+      const ox = coarse ? w * 0.5 - (shark.bw / 2) * scale : w * 0.63;
+      const oy = coarse ? h * 0.30 : h * 0.35;
       fish.forEach((f, i) => {
-        const p = shark[i % shark.length];
+        const p = shark.pts[i % shark.pts.length];
         f.tx = ox + p.x * scale;
         f.ty = oy + p.y * scale;
       });
@@ -281,7 +347,7 @@ export default function OceanDepth() {
 
       // máquina de estados da convergência (beats em TEMPO real)
       if (mode === 'converge' && modeMs > 1800) setMode('hold');
-      else if (mode === 'hold' && modeMs > 750) setMode('strike');
+      else if (mode === 'hold' && modeMs > 1250) setMode('strike'); // a marca precisa registrar
       else if (mode === 'strike') {
         // o tubarão inteiro dá o bote: alvos avançam na direção do headline
         for (const f of fish) { f.tx -= 15 * k; f.ty += 3 * k; }
@@ -396,14 +462,15 @@ export default function OceanDepth() {
 
         if (inShape) {
           // parados na silhueta, o traço-por-velocidade colapsa em nada —
-          // aqui cada peixe vira um ponto de plâncton (halo + núcleo)
-          ctx.fillStyle = COLORS[f.hue](alpha * 0.35);
+          // cada peixe vira um ponto de plâncton. Tamanho/alpha UNIFORMES:
+          // a variância por camada z vira ruído e desfaz a leitura da forma.
+          ctx.fillStyle = COLORS[f.hue](0.32);
           ctx.beginPath();
-          ctx.arc(f.x, f.y, 3.4 * f.z, 0, Math.PI * 2);
+          ctx.arc(f.x, f.y, 3.1, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = COLORS[f.hue](alpha);
+          ctx.fillStyle = COLORS[f.hue](0.92);
           ctx.beginPath();
-          ctx.arc(f.x, f.y, 1.5 * f.z, 0, Math.PI * 2);
+          ctx.arc(f.x, f.y, 1.5, 0, Math.PI * 2);
           ctx.fill();
           continue;
         }
