@@ -86,15 +86,21 @@ export default function Nav() {
       {mobileOpen && (
         <div
           className="lg:hidden mx-auto max-w-6xl mt-2 rounded-3xl border border-white/10 bg-black/85 backdrop-blur-xl overflow-hidden"
-          style={{ animation: 'fadeSlideDown 0.3s ease-out both' }}
+          style={{ animation: 'fadeSlideDown 0.45s cubic-bezier(0.2,0,0.1,1) both' }}
         >
+          {/* linha de superfície — o menu "mergulha" a partir dela */}
+          <div
+            className="h-px w-full"
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(25,199,247,.5), transparent)' }}
+          />
           <div className="px-6 py-5 flex flex-col gap-1">
-            {navLinks.map((link) => (
+            {navLinks.map((link, i) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 className="type-cta text-sm text-zinc-300 hover:text-white py-2.5 transition-colors"
+                style={{ animation: `fadeSlideIn .5s cubic-bezier(0.2,0,0.1,1) ${(0.08 + i * 0.06).toFixed(2)}s both` }}
               >
                 {link.label}
               </a>
@@ -103,6 +109,7 @@ export default function Nav() {
               href="#contact"
               onClick={() => setMobileOpen(false)}
               className="mt-3 text-center shimmer-button type-cta text-sm rounded-full py-3 px-5 bg-blue-600 text-white"
+              style={{ animation: `fadeSlideIn .55s cubic-bezier(0.2,0,0.1,1) ${(0.08 + navLinks.length * 0.06 + 0.06).toFixed(2)}s both` }}
             >
               Falar com Especialista
             </a>

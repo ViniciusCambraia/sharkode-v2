@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import gsap from 'gsap';
 import { Send, MessageCircle } from 'lucide-react';
 import { useGsapReveal } from '../hooks/useGsapReveal';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
@@ -86,6 +87,29 @@ export default function Contact() {
     }
   };
 
+  // Micro-motion de validação: submit inválido → shake curto + foco no
+  // primeiro campo com erro (motion a serviço da conversão, não do prêmio)
+  const submitHandler = handleSubmit(onSubmit);
+  const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    submitHandler(e);
+    window.setTimeout(() => {
+      const form = formRef.current;
+      if (!form) return;
+      const firstErr = form.querySelector<HTMLElement>('.text-red-400');
+      if (!firstErr) return;
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        gsap.fromTo(form, { x: 0 }, {
+          x: 0,
+          duration: 0.4,
+          ease: 'none',
+          keyframes: [{ x: -9 }, { x: 8 }, { x: -5 }, { x: 3 }, { x: 0 }],
+        });
+      }
+      firstErr.parentElement?.querySelector<HTMLElement>('input,textarea')?.focus();
+      navigator.vibrate?.([12, 40, 12]);
+    }, 30);
+  };
+
   return (
     <section
       id="contact"
@@ -117,7 +141,7 @@ export default function Contact() {
 
         <form
           ref={formRef}
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={onFormSubmit}
           className="lg:col-span-7 rounded-2xl border border-white/5 bg-zinc-950/40 backdrop-blur-md p-8 md:p-10 space-y-5"
           noValidate
         >

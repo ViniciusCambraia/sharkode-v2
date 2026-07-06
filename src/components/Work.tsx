@@ -196,15 +196,21 @@ function WorkFan() {
             background: bg,
             border: `1px solid ${accent}22`,
             boxShadow: `0 24px 60px rgba(0,0,0,.5), 0 0 0 0.5px ${accent}15`,
-            transition: 'transform 0.4s ease, box-shadow 0.4s ease',
+            // turbidez: cards longe do central ficam "atrás da água"
+            // (blur ESTÁTICO — renderiza uma vez; só transiciona no hover)
+            filter: `blur(${Math.abs(i - 1) * 1.4}px) brightness(${1 - Math.abs(i - 1) * 0.14})`,
+            transition: 'transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease',
           }}
           onMouseEnter={(e) => {
             (e.currentTarget as HTMLElement).style.transform = `translateX(${i * FAN_STEP}px) translateY(-10px)`;
             (e.currentTarget as HTMLElement).style.boxShadow = `0 36px 80px rgba(0,0,0,.6), 0 0 0 1px ${accent}40`;
+            (e.currentTarget as HTMLElement).style.filter = 'none'; // emerge da água
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.transform = `translateX(${i * FAN_STEP}px)`;
             (e.currentTarget as HTMLElement).style.boxShadow = `0 24px 60px rgba(0,0,0,.5), 0 0 0 0.5px ${accent}15`;
+            (e.currentTarget as HTMLElement).style.filter =
+              `blur(${Math.abs(i - 1) * 1.4}px) brightness(${1 - Math.abs(i - 1) * 0.14})`;
           }}
         >
           <CaseContent accent={accent} tag={tag} title={title} badge={badge} bg={bg} image={image} />
