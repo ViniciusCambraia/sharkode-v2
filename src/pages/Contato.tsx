@@ -2,6 +2,7 @@ import { Component, lazy, Suspense, useEffect, useState, type ReactNode } from '
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import HoloCard from '../components/HoloCard';
+import { bite } from '../components/BiteTransition';
 import type { BadgeAction } from '../components/three/Lanyard';
 
 // three.js lanyard is desktop-only: 1.1MB gzip has no place on event-venue 4G
@@ -146,11 +147,17 @@ export default function Contato() {
         className="relative z-20 flex items-center justify-between px-5 pt-5 lg:px-10"
         style={{ animation: `fadeSlideDown .7s ${EASE} .1s both` }}
       >
-        <Link to="/" className="inline-flex items-center gap-2" aria-label="Ir para o site da Sharkode">
+        <Link
+          to="/"
+          onClick={(e) => { e.preventDefault(); bite('/'); }}
+          className="inline-flex items-center gap-2"
+          aria-label="Ir para o site da Sharkode"
+        >
           <img src="/SALVA_AI_GARAIO.webp" alt="Sharkode" className="h-6 w-auto shark-glow-nav" />
         </Link>
         <Link
           to="/"
+          onClick={(e) => { e.preventDefault(); bite('/'); }}
           className="font-grotesk text-[11px] font-semibold uppercase tracking-[.14em] text-white/45 transition-colors hover:text-white"
         >
           Conheça o site →

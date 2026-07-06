@@ -143,11 +143,11 @@ body {
 }
 
 /* ----- Hunter cursor (predatory reticle) ----- */
-.hunter-on { cursor: none; }
-.hunter-on a,
-.hunter-on button,
-.hunter-on [data-magnetic],
-.hunter-on [role="button"] { cursor: none; }
+/* Universal + !important: utilitários como cursor-pointer (cards do Work) e
+   o I-beam de inputs sobrepõem o cursor:none herdado — e a seta nativa
+   aparecia JUNTO com a mira. Com a mira ativa, o nativo some em tudo. */
+.hunter-on,
+.hunter-on * { cursor: none !important; }
 
 .hunter { position: fixed; inset: 0; z-index: 9998; pointer-events: none; }
 
@@ -455,12 +455,22 @@ a:focus-visible {
 .mask-reveal > span {
   display: block;
   animation: maskReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
-  /* pausado até a Syncopate carregar (classe posta no main.tsx) — o headline
-     nunca anima na fonte errada */
+  /* pausado até o preloader-sonar liberar o mergulho (classe dive-ready no
+     <html>) — o handoff véu→hero é uma coreografia só, sem troca de fonte */
   animation-play-state: paused;
 }
-.fonts-ready .mask-reveal > span {
+.dive-ready .mask-reveal > span {
   animation-play-state: running;
+}
+
+/* Entradas do hero gateadas pelo preloader (mesma coreografia) */
+.gated-anim { animation-play-state: paused !important; }
+.dive-ready .gated-anim { animation-play-state: running !important; }
+
+/* Pings do preloader-sonar */
+@keyframes preloaderPing {
+  0% { opacity: 0.9; transform: scale(0.2); }
+  100% { opacity: 0; transform: scale(6.5); }
 }
 @media (prefers-reduced-motion: reduce) {
   .mask-reveal > span { animation: none; }

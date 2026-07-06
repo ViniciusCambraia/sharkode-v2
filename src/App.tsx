@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import BiteTransition from './components/BiteTransition';
 import { ToastProvider } from './hooks/useToast';
 
 // Contato is a heavy 3D route — load it only when visited
@@ -11,6 +12,7 @@ function App() {
   return (
     <ToastProvider>
       <BrowserRouter>
+        <BiteTransition />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import Layout from '../components/Layout';
+import { bite } from '../components/BiteTransition';
 
 /**
  * 404 — "profundidade desconhecida". Usa o Layout completo (oceano + cardume
@@ -41,6 +42,7 @@ export default function NotFound() {
         </p>
         <Link
           to="/"
+          onClick={(e) => { e.preventDefault(); bite('/'); }}
           className="mt-8 inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-grotesk text-[14px] font-semibold text-white transition-[box-shadow] duration-300 hover:shadow-[0_0_28px_rgba(26,128,248,.5)]"
           style={{
             background: 'var(--blue)',

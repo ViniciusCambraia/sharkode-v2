@@ -57,7 +57,7 @@ export default function Hero() {
 
       {/* Content — left-aligned */}
       <div
-        className="relative z-10 max-w-[var(--w)] mx-auto px-5 w-full"
+        className="gated-anim relative z-10 max-w-[var(--w)] mx-auto px-5 w-full"
         style={{ animation: 'fadeSlideIn 1s ease-out 0.3s both' }}
       >
         {/* Eyebrow */}

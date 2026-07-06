@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
 import Layout from '../components/Layout';
+import PreloaderSonar from '../components/PreloaderSonar';
 import Nav from '../components/Nav';
 import Hero from '../components/Hero';
 import Ticker from '../components/Ticker';
@@ -28,6 +29,7 @@ export default function Home() {
   return (
     <Layout>
       <SEO />
+      <PreloaderSonar />
       <a href="#main" className="skip-link">
         Pular para o conteúdo
       </a>
