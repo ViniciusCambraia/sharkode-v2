@@ -3,6 +3,7 @@ import ScrollProgress from './ScrollProgress';
 import Toaster from './Toaster';
 import OceanDepth from './OceanDepth';
 import HunterCursor from './HunterCursor';
+import TapPing from './TapPing';
 import { useLenis } from '../hooks/useLenis';
 
 interface LayoutProps {
@@ -20,6 +21,7 @@ export default function Layout({ children }: LayoutProps) {
       <div className="relative z-10">{children}</div>
       <div className="grain" aria-hidden="true" />
       <HunterCursor />
+      <TapPing />
       <Toaster />
     </>
   );

@@ -5,6 +5,7 @@ import { ToastProvider } from './hooks/useToast';
 
 // Contato is a heavy 3D route — load it only when visited
 const Contato = lazy(() => import('./pages/Contato'));
+const NotFound = lazy(() => import('./pages/NotFound'));
 
 function App() {
   return (
@@ -17,6 +18,14 @@ function App() {
             element={
               <Suspense fallback={<div style={{ minHeight: '100vh', background: '#07070f' }} />}>
                 <Contato />
+              </Suspense>
+            }
+          />
+          <Route
+            path="*"
+            element={
+              <Suspense fallback={<div style={{ minHeight: '100vh', background: '#07070f' }} />}>
+                <NotFound />
               </Suspense>
             }
           />

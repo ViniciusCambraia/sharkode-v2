@@ -1,5 +1,8 @@
 import { ArrowUpRight, ArrowRight } from 'lucide-react';
 import { useMagnetic } from '../hooks/useMagnetic';
+import { useSinkExit } from '../hooks/useSinkExit';
+
+const haptic = () => navigator.vibrate?.(12);
 
 /* ── Circular scroll indicator ── */
 const SPIN_STYLE = `@keyframes spin-slow { to { transform: rotate(360deg); } }`;
@@ -41,10 +44,12 @@ function ScrollIndicator() {
 export default function Hero() {
   const magPrimary = useMagnetic<HTMLSpanElement>(0.4);
   const magGhost = useMagnetic<HTMLSpanElement>(0.4);
+  const sinkRef = useSinkExit<HTMLElement>();
 
   return (
     <section
       id="hero"
+      ref={sinkRef}
       className="relative min-h-[100svh] flex flex-col justify-center overflow-hidden"
       style={{ paddingTop: '120px', paddingBottom: '100px' }}
     >
@@ -77,9 +82,11 @@ export default function Hero() {
             <span style={{ animationDelay: '0.35s' }}>WEBSITES</span>
           </span>
           <span className="mask-reveal">
+            {/* partitura: a PAUSA antes do MORDEM. é o que transforma a
+                palavra em evento — beat de 0.45s depois da linha 1 */}
             <span
               className="bg-gradient-to-r from-blue-400 via-blue-500 to-indigo-500 bg-clip-text text-transparent"
-              style={{ animationDelay: '0.5s' }}
+              style={{ animationDelay: '0.8s' }}
             >
               QUE MORDEM.
             </span>
@@ -101,6 +108,7 @@ export default function Hero() {
             <span ref={magPrimary} className="inline-block">
               <a
                 href="#contact"
+                onClick={haptic}
                 className="inline-flex items-center gap-2 rounded-full py-3.5 px-7 font-grotesk text-[14px] font-semibold transition-[background,box-shadow] duration-300 hover:shadow-[0_0_28px_rgba(26,128,248,.5)]"
                 style={{ background: 'var(--blue)', color: '#fff' }}
               >

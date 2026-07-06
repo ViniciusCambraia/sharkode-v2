@@ -1,4 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import gsap from 'gsap';
+import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin';
+
+gsap.registerPlugin(ScrambleTextPlugin);
 
 /**
  * Hunting cursor — a sonar reticle that stalks the pointer, locks onto
@@ -33,6 +37,21 @@ export default function HunterCursor() {
     let lockedEl: HTMLElement | null = null;
     let raf = 0;
 
+    // Sonar identificando o alvo: quando a mira trava num elemento com
+    // [data-scramble], o rótulo embaralha ~350ms e resolve.
+    let scrambledEl: HTMLElement | null = null;
+    const scramble = (target: HTMLElement) => {
+      const label = target.querySelector<HTMLElement>('[data-scramble]') ??
+        (target.dataset.scramble != null ? target : null);
+      if (!label) return;
+      if (!label.dataset.scrambleOrig) label.dataset.scrambleOrig = label.textContent ?? '';
+      gsap.to(label, {
+        duration: 0.35,
+        overwrite: 'auto',
+        scrambleText: { text: label.dataset.scrambleOrig, chars: '▖▘░▒:·01', speed: 1.2 },
+      });
+    };
+
     const onMove = (e: MouseEvent) => {
       mouse.x = e.clientX;
       mouse.y = e.clientY;
@@ -41,6 +60,12 @@ export default function HunterCursor() {
         'a, button, [data-magnetic], [role="button"], input, textarea',
       ) as HTMLElement | null;
       ring.classList.toggle('locked', !!lockedEl);
+      if (lockedEl && lockedEl !== scrambledEl) {
+        scrambledEl = lockedEl;
+        scramble(lockedEl);
+      } else if (!lockedEl) {
+        scrambledEl = null; // re-hover re-escaneia
+      }
     };
 
     const onDown = () => {

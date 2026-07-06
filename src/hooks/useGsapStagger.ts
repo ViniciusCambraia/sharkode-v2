@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -37,7 +38,7 @@ export function useGsapStagger<T extends HTMLElement = HTMLDivElement>(
         y: 0,
         scale: 1,
         duration: 0.7,
-        ease: 'power3.out',
+        ease: 'drift',
         stagger: 0.12,
         scrollTrigger: {
           trigger: el,

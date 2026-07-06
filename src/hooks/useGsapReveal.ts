@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -28,7 +29,7 @@ export function useGsapReveal() {
     const tween = gsap.to(words, {
       y: '0%',
       duration: 1.2,
-      ease: 'power4.out',
+      ease: 'drift',
       stagger: 0.15,
       scrollTrigger: {
         trigger: el,

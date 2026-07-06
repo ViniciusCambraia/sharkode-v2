@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, type RefObject } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -31,7 +32,7 @@ export function useGsapFadeUp<T extends HTMLElement = HTMLDivElement>(
         autoAlpha: 1,
         y: 0,
         duration: 0.8,
-        ease: 'power3.out',
+        ease: 'drift',
         scrollTrigger: {
           trigger: el,
           start: 'top 85%',

@@ -1,7 +1,9 @@
 ﻿import { useLayoutEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
+import { useSinkExit } from '../hooks/useSinkExit';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -130,7 +132,7 @@ function WorkFan() {
       autoAlpha: 1,
       scale: 1,
       duration: 0.7,
-      ease: 'power3.out',
+      ease: 'drift',
       stagger: 0.1,
       scrollTrigger: {
         trigger: container,
@@ -215,9 +217,10 @@ function WorkFan() {
 /* ── Main Section ── */
 export default function Work() {
   const headerRef = useGsapFadeUp();
+  const sinkRef = useSinkExit<HTMLElement>();
 
   return (
-    <section className="py-24 md:py-36 overflow-hidden" style={{ borderTop: '1px solid var(--bd)' }}>
+    <section ref={sinkRef} className="py-24 md:py-36 overflow-hidden" style={{ borderTop: '1px solid var(--bd)' }}>
       <div className="max-w-[var(--w)] mx-auto px-5">
 
         {/* Header — left-aligned, referência style */}

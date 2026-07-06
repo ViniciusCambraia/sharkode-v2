@@ -22,6 +22,14 @@ import '@fontsource/geist/latin-500.css';
 import './index.css';
 import App from './App.tsx';
 
+// Gate de fontes: o word-reveal do hero só dispara com a Syncopate carregada
+// (senão o headline "pisca" trocando de fonte no meio da animação em 3G).
+// Race com timeout — nunca segura o site refém de uma fonte.
+Promise.race([
+  document.fonts?.ready ?? Promise.resolve(),
+  new Promise((r) => setTimeout(r, 600)),
+]).then(() => document.documentElement.classList.add('fonts-ready'));
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>

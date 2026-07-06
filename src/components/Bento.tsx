@@ -1,9 +1,11 @@
 ﻿import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useTilt } from '../hooks/useTilt';
 import { useSpotlight } from '../hooks/useSpotlight';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
+import { useSinkExit } from '../hooks/useSinkExit';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,6 +34,7 @@ function Eyebrow({ children, color = 'var(--blue)' }: { children: React.ReactNod
 export default function Bento() {
   const headRef = useGsapFadeUp();
   const gridRef = useRef<HTMLDivElement>(null);
+  const sinkRef = useSinkExit<HTMLElement>();
 
   useLayoutEffect(() => {
     const el = gridRef.current;
@@ -54,7 +57,7 @@ export default function Bento() {
     const tween = gsap.to(items, {
       autoAlpha: 1, y: 0, x: 0, scale: 1,
       duration: 0.75,
-      ease: 'power3.out',
+      ease: 'drift',
       stagger: 0.12,
       scrollTrigger: {
         trigger: el,
@@ -74,7 +77,7 @@ export default function Bento() {
     // overflow-x-clip: os cards esperam o reveal com translateX(±55) — sem o
     // clip, esse offset invisível ALARGA o layout do celular (Nav estica,
     // página balança). A seção contém os próprios transforms.
-    <section className="overflow-x-clip py-24 md:py-32">
+    <section ref={sinkRef} className="overflow-x-clip py-24 md:py-32">
       <div className="max-w-[var(--w)] mx-auto px-5">
         {/* Header */}
         <div ref={headRef} className="mb-16">

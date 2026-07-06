@@ -1,5 +1,6 @@
 ﻿import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import '../lib/eases';
 import { ExternalLink } from 'lucide-react';
 import { useGsapReveal } from '../hooks/useGsapReveal';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
@@ -179,7 +180,7 @@ export default function Portfolio() {
       opacity: 0,
       x: -20,
       duration: 0.15,
-      ease: 'power2.in',
+      ease: 'bite',
       overwrite: 'auto',
       onComplete: () => {
         setActive(next);
@@ -195,7 +196,7 @@ export default function Portfolio() {
             x: 0,
             minHeight: newHeight,
             duration: 0.35,
-            ease: 'power2.out',
+            ease: 'drift',
             clearProps: 'transform,minHeight',
             overwrite: 'auto',
           }

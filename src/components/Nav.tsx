@@ -51,7 +51,9 @@ export default function Nav() {
               href={link.href}
               className="type-cta text-[11px] text-zinc-400 hover:text-white transition-colors relative group"
             >
-              {link.label}
+              {/* span próprio: o scramble do lock-on troca só o texto, sem
+                  destruir o underline animado */}
+              <span data-scramble>{link.label}</span>
               <span className="absolute -bottom-1 left-0 w-0 h-px bg-blue-500 transition-all duration-300 group-hover:w-full" />
             </a>
           ))}

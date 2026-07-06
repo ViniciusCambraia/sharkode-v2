@@ -123,6 +123,25 @@ body {
   background-size: 160px 160px;
 }
 
+/* ----- Tap-ping sonar (touch) ----- */
+.tap-ping {
+  position: fixed;
+  z-index: 9997;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border: 1.5px solid var(--cyan);
+  border-radius: 9999px;
+  pointer-events: none;
+  /* bite: acelera feroz e trava — o ping "estala" */
+  animation: tapPing 0.45s cubic-bezier(0.75, 0, 0.15, 1) forwards;
+  box-shadow: 0 0 12px rgba(25, 199, 247, 0.35);
+}
+@keyframes tapPing {
+  0% { opacity: 0.9; transform: scale(0.4); }
+  100% { opacity: 0; transform: scale(7); }
+}
+
 /* ----- Hunter cursor (predatory reticle) ----- */
 .hunter-on { cursor: none; }
 .hunter-on a,
@@ -436,6 +455,12 @@ a:focus-visible {
 .mask-reveal > span {
   display: block;
   animation: maskReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  /* pausado até a Syncopate carregar (classe posta no main.tsx) — o headline
+     nunca anima na fonte errada */
+  animation-play-state: paused;
+}
+.fonts-ready .mask-reveal > span {
+  animation-play-state: running;
 }
 @media (prefers-reduced-motion: reduce) {
   .mask-reveal > span { animation: none; }
