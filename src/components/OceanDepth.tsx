@@ -61,33 +61,8 @@ interface SharkShape {
   pts: Array<{ x: number; y: number }>;
   bw: number; // caixa da forma
   bh: number;
-  sprite?: HTMLCanvasElement; // silhueta sombreada (p/ a sombra do predador)
 }
 
-/* Sprite de sombra: silhueta escura e borrada da forma — o vulto que cruza
-   o fundo no idle. Pré-renderizado uma vez (blur em runtime custa caro). */
-function buildShadowSprite(draw: (c: CanvasRenderingContext2D) => void, bw: number, bh: number): HTMLCanvasElement {
-  const pad = 24;
-  const raw = document.createElement('canvas');
-  raw.width = bw + pad * 2;
-  raw.height = bh + pad * 2;
-  const rc = raw.getContext('2d')!;
-  rc.translate(pad, pad);
-  draw(rc);
-  rc.setTransform(1, 0, 0, 1, 0, 0);
-  // tinge de escuro-abissal mantendo o alpha da forma
-  rc.globalCompositeOperation = 'source-in';
-  rc.fillStyle = '#02060e';
-  rc.fillRect(0, 0, raw.width, raw.height);
-  // versão borrada
-  const out = document.createElement('canvas');
-  out.width = raw.width;
-  out.height = raw.height;
-  const oc = out.getContext('2d')!;
-  oc.filter = 'blur(7px)';
-  oc.drawImage(raw, 0, 0);
-  return out;
-}
 
 /* ~240 pontos não LEEM uma forma preenchida — mas leem perfeitamente um
    CONTORNO (liga-pontos). Amostra a BORDA + ~15% de miolo. */
@@ -126,7 +101,6 @@ function sampleShark(count: number): SharkShape {
   const c = off.getContext('2d')!;
   drawShark(c);
   const shape = samplePoints(c.getImageData(0, 0, W, H).data, W, H, count);
-  shape.sprite = buildShadowSprite(drawShark, W, H);
   return shape;
 }
 
@@ -174,11 +148,6 @@ async function sampleLogoShark(count: number): Promise<SharkShape | null> {
     }
     if (y1 <= y0) return null;
     const shape = samplePoints(data, W, H, count, first, y0, x1, y1 + 1, ALPHA);
-    shape.sprite = buildShadowSprite(
-      (sc) => sc.drawImage(img, first, y0, x1 - first, y1 + 1 - y0, 0, 0, x1 - first, y1 + 1 - y0),
-      x1 - first,
-      y1 + 1 - y0,
-    );
     return shape;
   } catch {
     return null;
@@ -326,7 +295,6 @@ export default function OceanDepth() {
     // easter egg: digitar "shark" reprisa o ataque
     let typed = '';
     const onKey = (e: KeyboardEvent) => {
-      poke();
       typed = (typed + e.key.toLowerCase()).slice(-5);
       if (typed === 'shark') triggerConverge();
     };
@@ -334,28 +302,15 @@ export default function OceanDepth() {
     // hooks de dev/teste (também usados pela verificação visual automatizada)
     (window as unknown as Record<string, unknown>).__sharkConverge = triggerConverge;
     (window as unknown as Record<string, unknown>).__sharkState = () => ({ mode, modeMs, depth, frame, trigs });
-    (window as unknown as Record<string, unknown>).__sharkShadow = () => { lastInteract = -99999; lastShadow = -99999; };
     (window as unknown as Record<string, unknown>).__sharkTargets = () => fish.map((f) => [Math.round(f.tx), Math.round(f.ty)]);
-
-    /* ---------- sombra do predador (idle) ----------
-       Depois de um tempo sem interação, um VULTO enorme e desfocado do
-       tubarão cruza o fundo devagar — e o cardume abre caminho na frente
-       dele. Raridade = evento (na 404 o idle é mais curto). */
-    const shadow = { active: false, x: 0, y: 0, dir: -1, sw: 0, sh: 0, alpha: 0 };
-    let lastInteract = 0;
-    let lastShadow = -60000;
-    let lastScrollY = -1;
-    const poke = () => { lastInteract = performance.now(); };
 
     /* ---------- interação ---------- */
     const onMove = (e: MouseEvent) => {
-      poke();
       mouse.x = e.clientX; mouse.y = e.clientY;
       mouse.nx = e.clientX / w; mouse.ny = e.clientY / h;
     };
     const onLeave = () => { mouse.x = -9999; mouse.y = -9999; };
     const onTouch = (e: TouchEvent) => {
-      poke();
       const t = e.touches[0];
       if (!t) return;
       mouse.x = t.clientX; mouse.y = t.clientY;
@@ -363,7 +318,6 @@ export default function OceanDepth() {
     };
     const onTouchEnd = () => { mouse.x = -9999; mouse.y = -9999; };
     const onDown = (e: MouseEvent) => {
-      poke();
       if (mode !== 'school') return; // durante o ataque, nada interrompe
       for (const f of fish) {
         const dx = f.x - e.clientX, dy = f.y - e.clientY;
@@ -393,29 +347,6 @@ export default function OceanDepth() {
       modeMs += dt;
       if (frame % 60 === 0) maxScroll = Math.max(1, document.documentElement.scrollHeight - h);
       depth = Math.min(1, window.scrollY / maxScroll);
-      if (window.scrollY !== lastScrollY) { lastScrollY = window.scrollY; lastInteract = now; }
-
-      // sombra do predador: nasce no idle, cruza a tela, some
-      const idleNeed = window.location.pathname === '/' ? 12000 : 5000;
-      if (!shadow.active && mode === 'school' && shark.sprite &&
-          now - lastInteract > idleNeed && now - lastShadow > 30000) {
-        shadow.active = true;
-        lastShadow = now;
-        shadow.dir = Math.random() < 0.5 ? -1 : 1;
-        shadow.sw = Math.min(w * 0.5, 700);
-        shadow.sh = shadow.sw * (shark.sprite.height / shark.sprite.width);
-        shadow.y = h * (0.18 + Math.random() * 0.45);
-        shadow.x = shadow.dir < 0 ? w + 40 : -shadow.sw - 40;
-        shadow.alpha = 0;
-      }
-      if (shadow.active) {
-        const total = w + shadow.sw + 80;
-        shadow.x += shadow.dir * (total / 16000) * dt; // ~16s de travessia
-        const prog = shadow.dir < 0 ? (w + 40 - shadow.x) / total : (shadow.x + shadow.sw + 40) / total;
-        shadow.alpha = Math.sin(Math.min(1, Math.max(0, prog)) * Math.PI) * 0.5;
-        if (shadow.dir < 0 ? shadow.x < -shadow.sw - 60 : shadow.x > w + 60) shadow.active = false;
-      }
-
       // máquina de estados da convergência (beats em TEMPO real)
       if (mode === 'converge' && modeMs > 1800) setMode('hold');
       else if (mode === 'hold' && modeMs > 1250) setMode('strike'); // a marca precisa registrar
@@ -496,19 +427,6 @@ export default function OceanDepth() {
           ay += (pdy / pd) * kf;
         }
 
-        // o cardume abre caminho na frente do vulto
-        if (shadow.active) {
-          const sx = shadow.x + shadow.sw / 2, sy = shadow.y + shadow.sh / 2;
-          const sdx = f.x - sx, sdy = f.y - sy;
-          const sd = Math.hypot(sdx, sdy);
-          const R = shadow.sw * 0.55;
-          if (sd < R && sd > 0.001) {
-            const ks = (1 - sd / R) * 1.5;
-            ax += (sdx / sd) * ks;
-            ay += (sdy / sd) * ks;
-          }
-        }
-
         const M = 70, W2 = 0.06;
         if (f.x < M) ax += W2;
         if (f.x > w - M) ax -= W2;
@@ -534,21 +452,6 @@ export default function OceanDepth() {
 
     const draw = () => {
       drawBackdrop();
-
-      // o vulto do predador (atrás dos peixes, com nado ondulante sutil)
-      if (shadow.active && shark.sprite && shadow.alpha > 0.01) {
-        const bob = Math.sin(lastNow / 900) * 8;
-        ctx.save();
-        ctx.globalAlpha = shadow.alpha;
-        if (shadow.dir > 0) {
-          ctx.translate(shadow.x + shadow.sw, shadow.y + bob);
-          ctx.scale(-1, 1); // a logo nada pra esquerda; indo pra direita, espelha
-          ctx.drawImage(shark.sprite, 0, 0, shadow.sw, shadow.sh);
-        } else {
-          ctx.drawImage(shark.sprite, shadow.x, shadow.y + bob, shadow.sw, shadow.sh);
-        }
-        ctx.restore();
-      }
 
       ctx.globalCompositeOperation = 'screen';
       ctx.lineCap = 'round';
