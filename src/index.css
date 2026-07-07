@@ -123,6 +123,42 @@ body {
   background-size: 160px 160px;
 }
 
+/* ----- Shark Icons: micro-animações no hover do card (.group) ----- */
+.group:hover .i-ping { animation: icoPing 1.5s ease-in-out infinite; }
+.group:hover .i-ping2 { animation: icoPing 1.5s ease-in-out .25s infinite; }
+.group:hover .i-rastro { stroke-dasharray: 4 3; animation: icoRastro 0.7s linear infinite; }
+.group:hover .i-onda,
+.group:hover .i-flui { animation: icoOnda 1.4s ease-in-out infinite; }
+.group:hover .i-flui2 { animation: icoOnda 1.4s ease-in-out .15s infinite; }
+.group:hover .i-flui3 { animation: icoOnda 1.4s ease-in-out .3s infinite; }
+.group:hover .i-nada { animation: icoNada 1.4s ease-in-out infinite; }
+.group:hover .i-tent { animation: icoTent 1.2s ease-in-out infinite; }
+.group:hover .i-tent2 { animation: icoTent 1.2s ease-in-out .2s infinite; }
+.group:hover .i-peixe { animation: icoPeixe 1s ease-in-out infinite; }
+.group:hover .i-sobe { animation: icoSobe 1.2s ease-in-out infinite; }
+.group:hover .i-sobe2 { animation: icoSobe 1.2s ease-in-out .15s infinite; }
+.group:hover .i-sobe3 { animation: icoSobe 1.2s ease-in-out .3s infinite; }
+.group:hover .i-alvo { animation: icoAlvo 1s ease-in-out infinite; }
+.group:hover .i-eco { animation: icoPing 1.4s ease-in-out infinite; }
+.group:hover .i-corte { stroke-dasharray: 16; animation: icoCorte .8s cubic-bezier(0.75,0,0.15,1) 1 both; }
+.i-ping, .i-ping2, .i-onda, .i-flui, .i-flui2, .i-flui3, .i-nada, .i-tent, .i-tent2,
+.i-peixe, .i-sobe, .i-sobe2, .i-sobe3, .i-alvo, .i-eco {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes icoPing { 0%,100% { opacity: .25; } 50% { opacity: .9; } }
+@keyframes icoRastro { to { stroke-dashoffset: -7; } }
+@keyframes icoOnda { 0%,100% { transform: translateX(0); } 50% { transform: translateX(1.6px); } }
+@keyframes icoNada { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-2px,1px); } }
+@keyframes icoTent { 0%,100% { transform: translateX(0); } 50% { transform: translateX(1.2px); } }
+@keyframes icoPeixe { 0%,100% { transform: translate(0,0); } 50% { transform: translate(.8px,-.8px); } }
+@keyframes icoSobe { 0%,100% { transform: translateY(0); opacity: inherit; } 50% { transform: translateY(-1.6px); } }
+@keyframes icoAlvo { 0%,100% { transform: scale(1); } 50% { transform: scale(1.5); } }
+@keyframes icoCorte { from { stroke-dashoffset: 16; } to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  [class*='i-'] { animation: none !important; }
+}
+
 /* ----- Tap-ping sonar (touch) ----- */
 .tap-ping {
   position: fixed;

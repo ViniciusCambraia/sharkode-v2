@@ -185,7 +185,8 @@ export default function OceanDepth() {
     /* ---------- backdrop (escurece com a descida) ---------- */
     const REST_X = 0.72, REST_Y = 0.5;
     const mouse = { x: -9999, y: -9999, nx: 0.5, ny: 0.5 };
-    let depth = 0; // 0 = superfície (hero), 1 = fossa (footer)
+    let depth = 0;   // 0 = superfície (hero), 1 = fossa (footer)
+    let heroVis = 1; // 1 = hero em vista (cardume vivo), 0 = passou do hero
 
     const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
     const drawBackdrop = () => {
@@ -269,7 +270,7 @@ export default function OceanDepth() {
     let trigs = 0;
     const triggerConverge = () => {
       trigs++;
-      if (mode !== 'school') return;
+      if (mode !== 'school' || heroVis < 0.5) return; // momento do hero
       layoutShark();
       setMode('converge');
     };
@@ -347,6 +348,9 @@ export default function OceanDepth() {
       modeMs += dt;
       if (frame % 60 === 0) maxScroll = Math.max(1, document.documentElement.scrollHeight - h);
       depth = Math.min(1, window.scrollY / maxScroll);
+      // O cardume é assinatura do HERO: some conforme a primeira dobra sai
+      // (o fundo de profundidade continua o site inteiro).
+      heroVis = Math.max(0, Math.min(1, 1 - window.scrollY / (h * 0.85)));
       // máquina de estados da convergência (beats em TEMPO real)
       if (mode === 'converge' && modeMs > 1800) setMode('hold');
       else if (mode === 'hold' && modeMs > 1250) setMode('strike'); // a marca precisa registrar
@@ -373,6 +377,9 @@ export default function OceanDepth() {
       // na descida o cardume rareia e desacelera (águas profundas = menos vida)
       const active = inShape ? fish.length : Math.round(fish.length * (1 - depth * 0.45));
       const slow = 1 - depth * 0.3;
+
+      // fora do hero, a simulação PAUSA (bateria) — retoma ao voltar
+      if (heroVis <= 0.001 && !inShape) return;
 
       for (let i = 0; i < fish.length; i++) {
         const f = fish[i];
@@ -453,25 +460,26 @@ export default function OceanDepth() {
     const draw = () => {
       drawBackdrop();
 
+      const inShape = mode === 'converge' || mode === 'hold' || mode === 'strike';
+      if (heroVis <= 0.001 && !inShape) return; // só o fundo fora do hero
       ctx.globalCompositeOperation = 'screen';
       ctx.lineCap = 'round';
-      const inShape = mode === 'converge' || mode === 'hold' || mode === 'strike';
       // bioluminescência: quanto mais fundo, mais os peixes brilham
       const glow = 1 + depth * 0.5 + (mode === 'hold' || mode === 'strike' ? 0.6 : 0);
       const active = inShape ? fish.length : Math.round(fish.length * (1 - depth * 0.45));
       for (let i = 0; i < active; i++) {
         const f = fish[i];
-        const alpha = Math.min(0.9, (0.16 + 0.4 * f.z) * glow);
+        const alpha = Math.min(0.9, (0.16 + 0.4 * f.z) * glow) * heroVis;
 
         if (inShape) {
           // parados na silhueta, o traço-por-velocidade colapsa em nada —
           // cada peixe vira um ponto de plâncton. Tamanho/alpha UNIFORMES:
           // a variância por camada z vira ruído e desfaz a leitura da forma.
-          ctx.fillStyle = COLORS[f.hue](0.32);
+          ctx.fillStyle = COLORS[f.hue](0.32 * Math.max(heroVis, 0.15));
           ctx.beginPath();
           ctx.arc(f.x, f.y, 3.1, 0, Math.PI * 2);
           ctx.fill();
-          ctx.fillStyle = COLORS[f.hue](0.92);
+          ctx.fillStyle = COLORS[f.hue](0.92 * Math.max(heroVis, 0.15));
           ctx.beginPath();
           ctx.arc(f.x, f.y, 1.5, 0, Math.PI * 2);
           ctx.fill();

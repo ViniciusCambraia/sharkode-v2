@@ -1,4 +1,12 @@
-import { ArrowUpRight, Zap, Shield, Monitor, Database, Workflow, Globe } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import {
+  IconTerritorio,
+  IconFunil,
+  IconCardume,
+  IconVeloz,
+  IconTelas,
+  IconAguaViva,
+} from './SharkIcons';
 import { useGsapReveal } from '../hooks/useGsapReveal';
 import { useGsapFadeUp } from '../hooks/useGsapFadeUp';
 import { useSpotlight } from '../hooks/useSpotlight';
@@ -6,37 +14,37 @@ import { useTilt } from '../hooks/useTilt';
 
 const services = [
   {
-    icon: Globe,
+    icon: IconTerritorio,
     title: 'Sites Institucionais',
     description:
       'Presença digital premium que traduz a autoridade da sua marca em confiança.',
   },
   {
-    icon: Monitor,
+    icon: IconFunil,
     title: 'Landing Pages',
     description:
       'Páginas feitas para uma coisa só: transformar visitantes em contatos e vendas.',
   },
   {
-    icon: Workflow,
+    icon: IconCardume,
     title: 'Sistemas e Portais',
     description:
       'Sistemas sob medida com área de login, painéis de controle e integração com as ferramentas que você já usa.',
   },
   {
-    icon: Zap,
+    icon: IconVeloz,
     title: 'Rápido e Achado no Google',
     description:
       'Site que abre num piscar de olhos e aparece para quem procura você no Google.',
   },
   {
-    icon: Shield,
+    icon: IconTelas,
     title: 'Perfeito em Qualquer Tela',
     description:
       'Impecável no celular, no tablet e no computador — sem quebrar em nenhum tamanho.',
   },
   {
-    icon: Database,
+    icon: IconAguaViva,
     title: 'Automações com IA',
     description:
       'Inteligência artificial e integrações que assumem tarefas repetitivas e reduzem o trabalho manual em até 80%.',
@@ -48,7 +56,7 @@ function ServiceCard({
   title,
   description,
 }: {
-  icon: typeof Globe;
+  icon: typeof IconTerritorio;
   title: string;
   description: string;
 }) {
